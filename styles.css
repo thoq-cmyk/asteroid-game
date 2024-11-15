@@ -1,0 +1,24 @@
+/* Ensure the canvas takes up the entire screen */
+body,
+*gamecanvas {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background-image: url("assets/images/background/space.jpeg"); /* Set your background image */
+  background-repeat: no-repeat; /* Change to no-repeat if you don't want it to repeat */
+  background-position: center; /* Center the image */
+  background-attachment: fixed; /* Keep the background fixed */
+  background-size: cover; /* Makes the image cover the entire screen */
+}
+
+/* Ensure the canvas takes up the entire screen */
+canvas {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Allow clicks to pass through to the background */
+}
