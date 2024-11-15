@@ -10,7 +10,7 @@ rocketImage.src = "assets/images/ROCKET/rocket.png"; // Rocket image path
 
 // Load the asteroid image
 const asteroidImage = new Image();
-asteroidImage.src = "assets/images/background/purple-space.png"; // Asteroid image path
+asteroidImage.src = "assets/images/silver/spin-28.png"; // Asteroid image path
 
 // Load the background image
 const backgroundImage = new Image();
