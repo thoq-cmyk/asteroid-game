@@ -16,6 +16,10 @@ asteroidImage.src = "assets/images/silver/spin-28.png"; // Asteroid image path
 const backgroundImage = new Image();
 backgroundImage.src = "assets/images/background/space.jpeg"; // Path to your background image
 
+// Load the heart image for lives
+const heartImage = new Image();
+heartImage.src = "assets/images/heart.png"; // Path to your heart image
+
 class Player {
   constructor({ position, velocity, imageSrc }) {
     this.position = position;
@@ -138,7 +142,6 @@ window.setInterval(() => {
   const index = Math.floor(Math.random() * 4);
   let x, y, vx, vy;
   const radius = 50 * Math.random() + 10;
-
   switch (index) {
     case 0:
       x = 0 - radius;
@@ -261,10 +264,18 @@ function animate() {
   if (keys.d.pressed) player.rotation += ROTATIONAL_SPEED;
   else if (keys.a.pressed) player.rotation -= ROTATIONAL_SPEED;
 
-  // Display remaining lives
-  c.fillStyle = "white";
-  c.font = "20px Arial";
-  c.fillText("Lives: " + player.lives, 10, 30);
+  // Display remaining lives as heart icons
+  const heartWidth = 30; // Width of heart icon
+  const heartHeight = 30; // Height of heart icon
+  for (let i = 0; i < player.lives; i++) {
+    c.drawImage(
+      heartImage,
+      10 + i * (heartWidth + 5),
+      10,
+      heartWidth,
+      heartHeight
+    ); // Draw hearts with some spacing
+  }
 }
 
 animate();
