@@ -16,16 +16,6 @@ asteroidImage.src = "assets/images/silver/spin-28.png"; // Asteroid image path
 const backgroundImage = new Image();
 backgroundImage.src = "assets/images/background/space.jpeg"; // Path to your background image
 
-// Initialize score
-let score = 0;
-
-// Function to draw the score
-function drawScore() {
-  c.fillStyle = "white";
-  c.font = "20px Arial";
-  c.fillText("Score: " + score, 10, 60);
-}
-
 class Player {
   constructor({ position, velocity, imageSrc }) {
     this.position = position;
@@ -66,17 +56,17 @@ class Player {
   }
 }
 
-class Projectile {
+class Laser {
   constructor({ position, velocity }) {
     this.position = position;
     this.velocity = velocity;
-    this.radius = 5;
+    this.radius = 5; // Laser as a small circle (ball)
   }
 
   draw() {
     c.beginPath();
-    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2, false);
-    c.fillStyle = "white";
+    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
+    c.fillStyle = "orange"; // Change laser color to orange
     c.fill();
     c.closePath();
   }
@@ -138,10 +128,11 @@ const keys = {
 const SPEED = 3;
 const ROTATIONAL_SPEED = 0.05;
 const FRICTION = 0.97;
-const PROJECTILE_SPEED = 5;
+const LASER_SPEED = 5;
 
-const projectiles = [];
+const lasers = [];
 const asteroids = [];
+let score = 0; // Initialize score
 
 // Generate random asteroids at intervals
 window.setInterval(() => {
@@ -204,19 +195,31 @@ function animate() {
   // Update and draw player
   player.update();
 
-  // Update and draw projectiles
-  for (let i = projectiles.length - 1; i >= 0; i--) {
-    const projectile = projectiles[i];
-    projectile.update();
+  // Update and draw lasers
+  for (let i = lasers.length - 1; i >= 0; i--) {
+    const laser = lasers[i];
+    laser.update();
 
-    // Remove projectiles off-screen
+    // Remove lasers off-screen
     if (
-      projectile.position.x + projectile.radius < 0 ||
-      projectile.position.x - projectile.radius > canvas.width ||
-      projectile.position.y - projectile.radius > canvas.height ||
-      projectile.position.y + projectile.radius < 0
+      laser.position.x + laser.radius < 0 ||
+      laser.position.x - laser.radius > canvas.width ||
+      laser.position.y - laser.radius > canvas.height ||
+      laser.position.y + laser.radius < 0
     ) {
-      projectiles.splice(i, 1);
+      lasers.splice(i, 1);
+    }
+
+    // Check collision between lasers and asteroids
+    for (let j = asteroids.length - 1; j >= 0; j--) {
+      const asteroid = asteroids[j];
+      if (circleCollision(asteroid, laser)) {
+        // Destroy asteroid and laser on collision
+        asteroids.splice(j, 1);
+        lasers.splice(i, 1);
+        score += 10; // Increment score when an asteroid is destroyed
+        break; // Prevent multiple collisions in one iteration
+      }
     }
   }
 
@@ -247,18 +250,6 @@ function animate() {
     ) {
       asteroids.splice(i, 1);
     }
-
-    // Check collision between asteroids and projectiles
-    for (let j = projectiles.length - 1; j >= 0; j--) {
-      const projectile = projectiles[j];
-      if (circleCollision(asteroid, projectile)) {
-        // Update score when an asteroid is destroyed
-        score += 100; // Increase the score by 100
-        asteroids.splice(i, 1);
-        projectiles.splice(j, 1);
-        break;
-      }
-    }
   }
 
   // Update player movement
@@ -278,12 +269,13 @@ function animate() {
   c.font = "20px Arial";
   c.fillText("Lives: " + player.lives, 10, 30);
 
-  // Draw the score
-  drawScore();
+  // Display score
+  c.fillText("Score: " + score, canvas.width - 100, 30); // Display score at top-right corner
 }
 
 animate();
 
+// Key event listeners for movement and laser firing
 window.addEventListener("keydown", (event) => {
   switch (event.code) {
     case "KeyW":
@@ -296,15 +288,15 @@ window.addEventListener("keydown", (event) => {
       keys.d.pressed = true;
       break;
     case "Space":
-      projectiles.push(
-        new Projectile({
+      lasers.push(
+        new Laser({
           position: {
             x: player.position.x + Math.cos(player.rotation) * 30,
             y: player.position.y + Math.sin(player.rotation) * 30,
           },
           velocity: {
-            x: Math.cos(player.rotation) * PROJECTILE_SPEED,
-            y: Math.sin(player.rotation) * PROJECTILE_SPEED,
+            x: Math.cos(player.rotation) * LASER_SPEED,
+            y: Math.sin(player.rotation) * LASER_SPEED,
           },
         })
       );
