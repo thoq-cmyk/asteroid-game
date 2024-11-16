@@ -72,7 +72,7 @@ class Laser {
   draw() {
     c.beginPath();
     c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-    c.fillStyle = "orange"; // Change laser color to orange
+    c.fillStyle = "white"; // Change laser color to orange
     c.fill();
     c.closePath();
   }
