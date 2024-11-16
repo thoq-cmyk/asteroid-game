@@ -16,6 +16,12 @@ asteroidImage.src = "assets/images/silver/spin-28.png"; // Asteroid image path
 const backgroundImage = new Image();
 backgroundImage.src = "assets/images/background/space.jpeg"; // Path to your background image
 
+// Load sound effects
+const laserSound = new Audio("assets/sounds/laser.mp3"); // Replace with your file path
+const asteroidHitSound = new Audio("assets/sounds/boom.mp3"); // Replace with your file path
+const playerHitSound = new Audio("assets / sounds / life - lost.mp3"); // Replace with your file path
+const gameOverSound = new Audio("assets/sounds/game-over.mp3"); // Replace with your file path
+
 class Player {
   constructor({ position, velocity, imageSrc }) {
     this.position = position;
@@ -214,7 +220,7 @@ function animate() {
     for (let j = asteroids.length - 1; j >= 0; j--) {
       const asteroid = asteroids[j];
       if (circleCollision(asteroid, laser)) {
-        // Destroy asteroid and laser on collision
+        asteroidHitSound.play(); // Play asteroid hit sound
         asteroids.splice(j, 1);
         lasers.splice(i, 1);
         score += 10; // Increment score when an asteroid is destroyed
@@ -230,12 +236,14 @@ function animate() {
 
     // Check collision between player and asteroid
     if (circleCollision(player, asteroid)) {
+      playerHitSound.play(); // Play player hit sound
       player.lives -= 1; // Decrease player lives
       console.log(`Player hit! Lives remaining: ${player.lives}`);
       asteroids.splice(i, 1); // Remove the asteroid
 
       // Game over check
       if (player.lives <= 0) {
+        gameOverSound.play(); // Play game over sound
         alert("Game Over!");
         window.location.reload(); // Restart the game
       }
@@ -273,9 +281,6 @@ function animate() {
   c.fillText("Score: " + score, canvas.width - 100, 30); // Display score at top-right corner
 }
 
-animate();
-
-// Key event listeners for movement and laser firing
 window.addEventListener("keydown", (event) => {
   switch (event.code) {
     case "KeyW":
@@ -300,6 +305,7 @@ window.addEventListener("keydown", (event) => {
           },
         })
       );
+      laserSound.play(); // Play laser sound
       break;
   }
 });
@@ -317,3 +323,5 @@ window.addEventListener("keyup", (event) => {
       break;
   }
 });
+
+animate();
