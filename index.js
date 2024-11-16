@@ -16,6 +16,16 @@ asteroidImage.src = "assets/images/silver/spin-28.png"; // Asteroid image path
 const backgroundImage = new Image();
 backgroundImage.src = "assets/images/background/space.jpeg"; // Path to your background image
 
+// Initialize score
+let score = 0;
+
+// Function to draw the score
+function drawScore() {
+  c.fillStyle = "white";
+  c.font = "20px Arial";
+  c.fillText("Score: " + score, 10, 60);
+}
+
 class Player {
   constructor({ position, velocity, imageSrc }) {
     this.position = position;
@@ -242,6 +252,8 @@ function animate() {
     for (let j = projectiles.length - 1; j >= 0; j--) {
       const projectile = projectiles[j];
       if (circleCollision(asteroid, projectile)) {
+        // Update score when an asteroid is destroyed
+        score += 100; // Increase the score by 100
         asteroids.splice(i, 1);
         projectiles.splice(j, 1);
         break;
@@ -265,6 +277,9 @@ function animate() {
   c.fillStyle = "white";
   c.font = "20px Arial";
   c.fillText("Lives: " + player.lives, 10, 30);
+
+  // Draw the score
+  drawScore();
 }
 
 animate();
