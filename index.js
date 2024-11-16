@@ -19,7 +19,7 @@ backgroundImage.src = "assets/images/background/space.jpeg"; // Path to your bac
 // Load sound effects
 const laserSound = new Audio("assets/sounds/laser.mp3"); // Replace with your file path
 const asteroidHitSound = new Audio("assets/sounds/boom.mp3"); // Replace with your file path
-const playerHitSound = new Audio("assets / sounds / life - lost.mp3"); // Replace with your file path
+const playerHitSound = new Audio("assets/sounds/life-lost.mp3"); // Replace with your file path
 const gameOverSound = new Audio("assets/sounds/game-over.mp3"); // Replace with your file path
 
 class Player {
