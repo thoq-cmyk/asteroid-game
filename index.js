@@ -66,13 +66,13 @@ class Laser {
   constructor({ position, velocity }) {
     this.position = position;
     this.velocity = velocity;
-    this.radius = 5; // Laser as a small circle (ball)
+    this.radius = 2; // Laser as a small circle (ball)
   }
 
   draw() {
     c.beginPath();
     c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-    c.fillStyle = "white"; // Change laser color to orange
+    c.fillStyle = "green"; // Change laser color to orange
     c.fill();
     c.closePath();
   }
