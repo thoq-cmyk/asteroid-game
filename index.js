@@ -72,7 +72,7 @@ class Laser {
   draw() {
     c.beginPath();
     c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-    c.fillStyle = "green"; // Change laser color to orange
+    c.fillStyle = "green"; // Change laser color to green
     c.fill();
     c.closePath();
   }
@@ -118,6 +118,100 @@ class Asteroid {
   }
 }
 
+// New EnemyProjectile class
+class EnemyProjectile {
+  constructor({ position, velocity }) {
+    this.position = position;
+    this.velocity = velocity;
+    this.radius = 3; // Set a radius for the projectile
+  }
+
+  draw() {
+    c.beginPath();
+    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
+    c.fillStyle = "red"; // Change color to distinguish enemy projectiles
+    c.fill();
+    c.closePath();
+  }
+
+  update() {
+    this.draw();
+    this.position.x += this.velocity.x; // This will be 0
+    this.position.y += this.velocity.y; // This will move downwards
+  }
+}
+
+class Enemy {
+  constructor({ position, velocity, imageSrc }) {
+    this.position = position;
+    this.velocity = velocity;
+    this.radius = 30; // Set a radius for the enemy
+    this.image = new Image();
+    this.image.src = imageSrc;
+    this.isImageLoaded = false; // Flag to check if image is loaded
+    this.projectiles = []; // Array to hold enemy projectiles
+
+    // Ensure the image is loaded before attempting to draw
+    this.image.onload = () => {
+      this.isImageLoaded = true; // Flag indicating that the image is loaded
+    };
+  }
+
+  draw() {
+    if (!this.isImageLoaded) return; // Only draw if the image is loaded
+
+    c.drawImage(
+      this.image,
+      this.position.x - this.radius,
+      this.position.y - this.radius,
+      this.radius * 2,
+      this.radius * 2
+    );
+
+    // Draw projectiles
+    this.projectiles.forEach((projectile) => projectile.draw());
+  }
+
+  update() {
+    this.draw();
+    this.position.x += this.velocity.x;
+    this.position.y += this.velocity.y;
+
+    // Update projectiles
+    for (let i = this.projectiles.length - 1; i >= 0; i--) {
+      const projectile = this.projectiles[i];
+      projectile.update();
+
+      // Remove projectiles off-screen
+      if (
+        projectile.position.x + projectile.radius < 0 ||
+        projectile.position.x - projectile.radius > canvas.width ||
+        projectile.position.y - projectile.radius > canvas.height ||
+        projectile.position.y + projectile.radius < 0
+      ) {
+        this.projectiles.splice(i, 1);
+      }
+    }
+  }
+
+  shoot() {
+    const projectileVelocity = {
+      x: 0, // Move straight down
+      y: 3, // Speed of the projectile (adjust as needed)
+    };
+
+    this.projectiles.push(
+      new EnemyProjectile({
+        position: {
+          x: this.position.x,
+          y: this.position.y + this.radius, // Start from the bottom of the enemy
+        },
+        velocity: projectileVelocity,
+      })
+    );
+  }
+}
+
 // Initialize player
 const player = new Player({
   position: { x: canvas.width / 2, y: canvas.height / 2 },
@@ -138,7 +232,16 @@ const LASER_SPEED = 5;
 
 const lasers = [];
 const asteroids = [];
+const enemies = []; // Array to hold enemies
 let score = 0; // Initialize score
+
+// Background position variables
+let backgroundY = 0; // Initial background Y position
+const BACKGROUND_SPEED = 1; // Speed at which the background moves
+
+// Spawn rate variables
+let spawnRate = 5000; // Initial spawn rate in milliseconds
+let lastSpawnTime = 0; // Track the last spawn time
 
 // Generate random asteroids at intervals
 window.setInterval(() => {
@@ -183,6 +286,32 @@ window.setInterval(() => {
   );
 }, 3000);
 
+// Generate random enemies at intervals based on score
+function spawnEnemies() {
+  if (score > 500) {
+    const x = Math.random() * canvas.width; // Random x position
+    const y = 0; // Fixed y position at the top
+    const vx = (Math.random() - 0.5) * 2; // Random horizontal velocity
+    const vy = (Math.random() - 0.5) * 2; // Random vertical velocity
+
+    enemies.push(
+      new Enemy({
+        position: { x: x, y: y },
+        velocity: { x: vx, y: vy },
+        imageSrc: "assets/images/ufo/ufo-12.png", // Path to your enemy image
+      })
+    );
+
+    // Adjust spawn rate based on score
+    spawnRate = Math.max(1000, 5000 - Math.floor(score / 100) * 500); // Decrease spawn rate as score increases
+  }
+}
+
+// Call spawnEnemies at intervals
+setInterval(() => {
+  spawnEnemies();
+}, spawnRate);
+
 function circleCollision(circle1, circle2) {
   const xDifference = circle2.position.x - circle1.position.x;
   const yDifference = circle2.position.y - circle1.position.y;
@@ -195,8 +324,25 @@ function circleCollision(circle1, circle2) {
 function animate() {
   window.requestAnimationFrame(animate);
 
+  // Update the background position
+  backgroundY += BACKGROUND_SPEED;
+
   // Draw the background image
-  c.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+  c.drawImage(backgroundImage, 0, backgroundY, canvas.width, canvas.height);
+
+  // Draw the background image again to create a seamless scrolling effect
+  c.drawImage(
+    backgroundImage,
+    0,
+    backgroundY - canvas.height,
+    canvas.width,
+    canvas.height
+  );
+
+  // Reset the background position if it goes off-screen
+  if (backgroundY >= canvas.height) {
+    backgroundY = 0;
+  }
 
   // Update and draw player
   player.update();
@@ -223,7 +369,32 @@ function animate() {
         asteroidHitSound.play(); // Play asteroid hit sound
         asteroids.splice(j, 1);
         lasers.splice(i, 1);
-        score += 10; // Increment score when an asteroid is destroyed
+        score += 100; // Increment score when an asteroid is destroyed
+        break; // Prevent multiple collisions in one iteration
+      }
+    }
+
+    // Check collision between lasers and enemy projectiles
+    for (let j = 0; j < enemies.length; j++) {
+      const enemy = enemies[j];
+      for (let k = enemy.projectiles.length - 1; k >= 0; k--) {
+        const projectile = enemy.projectiles[k];
+        if (circleCollision(projectile, laser)) {
+          lasers.splice(i, 1); // Remove the laser
+          enemy.projectiles.splice(k, 1); // Remove the enemy projectile
+          score += 50; // Increment score for destroying enemy projectile
+          break; // Prevent multiple collisions in one iteration
+        }
+      }
+    }
+
+    // Check collision between lasers and enemies
+    for (let j = 0; j < enemies.length; j++) {
+      const enemy = enemies[j];
+      if (circleCollision(enemy, laser)) {
+        lasers.splice(i, 1); // Remove the laser
+        enemies.splice(j, 1); // Remove the enemy
+        score += 200; // Increment score for destroying enemy
         break; // Prevent multiple collisions in one iteration
       }
     }
@@ -260,6 +431,63 @@ function animate() {
     }
   }
 
+  // Update and manage enemies
+  for (let i = enemies.length - 1; i >= 0; i--) {
+    const enemy = enemies[i];
+    enemy.update();
+
+    // Call shoot method at intervals (e.g., every 1000ms)
+    if (Math.random() < 0.01) {
+      // Adjust the probability as needed
+      enemy.shoot();
+    }
+
+    // Check collision between player and enemy
+    if (circleCollision(player, enemy)) {
+      playerHitSound.play(); // Play player hit sound
+      player.lives -= 1; // Decrease player lives
+      console.log(`Player hit by enemy! Lives remaining: ${player.lives}`);
+      enemies.splice(i, 1); // Remove the enemy
+
+      // Game over check
+      if (player.lives <= 0) {
+        gameOverSound.play(); // Play game over sound
+        alert("Game Over!");
+        window.location.reload(); // Restart the game
+      }
+    }
+
+    // Check collision between enemy projectiles and player
+    for (let j = enemy.projectiles.length - 1; j >= 0; j--) {
+      const projectile = enemy.projectiles[j];
+      if (circleCollision(player, projectile)) {
+        playerHitSound.play(); // Play player hit sound
+        player.lives -= 1; // Decrease player lives
+        console.log(
+          `Player hit by enemy projectile! Lives remaining: ${player.lives}`
+        );
+        enemy.projectiles.splice(j, 1); // Remove the projectile
+
+        // Game over check
+        if (player.lives <= 0) {
+          gameOverSound.play(); // Play game over sound
+          alert("Game Over!");
+          window.location.reload(); // Restart the game
+        }
+      }
+    }
+
+    // Remove enemies off-screen
+    if (
+      enemy.position.x + enemy.radius < 0 ||
+      enemy.position.x - enemy.radius > canvas.width ||
+      enemy.position.y - enemy.radius > canvas.height ||
+      enemy.position.y + enemy.radius < 0
+    ) {
+      enemies.splice(i, 1);
+    }
+  }
+
   // Update player movement
   if (keys.w.pressed) {
     player.velocity.x = Math.cos(player.rotation) * SPEED;
@@ -279,7 +507,7 @@ function animate() {
 
   // Display score
   c.fillText("Score: " + score, canvas.width - 100, 30); // Display score at top-right corner
-}
+} // Closing brace for the animate function
 
 window.addEventListener("keydown", (event) => {
   switch (event.code) {
