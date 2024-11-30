@@ -1,9 +1,13 @@
-const canvas = document.querySelector("canvas");
+const canvas = document.getElementById("gameCanvas");
 const c = canvas.getContext("2d");
 
-canvas.width = 800;
-canvas.height = 600;
+// Set canvas size to 900x900 pixels
+canvas.width = 900;
+canvas.height = 900;
 
+// Fill the canvas with a solid color for testing
+c.fillStyle = "rgba(255, 0, 0, 0.5)"; // Semi-transparent red
+c.fillRect(0, 0, canvas.width, canvas.height);
 // Load the rocket image
 const rocketImage = new Image();
 rocketImage.src = "assets/images/ROCKET/rocket.png"; // Rocket image path

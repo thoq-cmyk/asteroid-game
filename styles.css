@@ -1,50 +1,47 @@
+html,
 body {
   margin: 0;
-  overflow: hidden; /* Prevent scrollbars from appearing */
-  background-color: black; /* Set a background color for the body */
-  font-family: Arial, sans-serif; /* Set a font for the game text */
+  padding: 0;
   display: flex;
-  flex-direction: column; /* Stack elements vertically */
-  align-items: center; /* Center items horizontally */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
   height: 100vh; /* Full viewport height */
+  background-color: black; /* Optional: Set a background color */
 }
 
-.header {
-  margin-top: 20px; /* Space above the title */
-  color: white; /* Title color */
-}
-
-.score-lives {
-  position: absolute; /* Position it relative to the viewport */
-  top: 10px; /* Position it near the top */
-  left: 10px; /* Position it on the left */
-  color: white; /* Set text color */
-  font-size: 20px; /* Set font size */
-  z-index: 10; /* Ensure it is above the canvas */
-}
-
-.background {
+.tv-frame {
+  position: relative;
+  width: 800px; /* Use a percentage of the viewport width */
+  max-width: 1200px; /* Maximum width of the TV frame */
+  height: auto; /* Auto height to maintain aspect ratio */
+  aspect-ratio: 1; /* Maintain square aspect ratio */
   display: flex;
-  justify-content: center; /* Center the canvas horizontally */
-  margin-top: 20px; /* Space between the title and canvas */
+  justify-content: center; /* Center the canvas inside */
+  align-items: center; /* Center the canvas inside */
+  overflow: visible; /* Ensure overflow is visible */
+  background-color: transparent; /* Make the background transparent */
+}
+
+.tv-image {
+  width: 160%; /* Make the TV image fill the frame */
+  height: 93%; /* Make the TV image fill the frame */
+  position: absolute; /* Position the image absolutely */
+  z-index: 1; /* Ensure the image is below the canvas */
+  overflow: visible;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 canvas {
-  display: block; /* Remove the inline-block space */
-  border: 2px solid white; /* Optional: add a border around the canvas */
-}
-
-.leaderboard {
-  margin-top: 20px; /* Space above the leaderboard */
-  color: white; /* Leaderboard text color */
-  text-align: center; /* Center the leaderboard text */
-}
-
-.leaderboard h2 {
-  margin: 0; /* Remove default margin */
-}
-
-#leaderboard-list {
-  list-style-type: none; /* Remove bullet points */
-  padding: 0; /* Remove default padding */
+  position: absolute;
+  width: 88%; /* Use a percentage of the TV frame */
+  height: 68%; /* Use a percentage of the TV frame */
+  border: none; /* Remove any border */
+  background-color: white; /* Make the canvas background transparent */
+  position: relative; /* Change to relative positioning */
+  z-index: 2; /* Ensure the canvas is above the TV image */
+  border-radius: 20px; /* Set rounded corners */
+  display: flex;
 }

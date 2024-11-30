@@ -3,28 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game with TV</title>
     <link rel="stylesheet" href="styles.css" />
-    <title>Asteroids Game</title>
+    <!-- Link to your CSS file -->
   </head>
   <body>
-    <div class="header">
-      <h1>Space Game</h1>
-      <!-- Title of the game -->
-    </div>
-    <div class="background">
-      <canvas id="gameCanvas"></canvas>
-      <!-- Only one canvas element for the game -->
-    </div>
-    <div class="leaderboard">
-      <h2>Leaderboard</h2>
-      <ul id="leaderboard-list">
-        <li>Player 1: 1000</li>
-        <li>Player 2: 800</li>
-        <li>Player 3: 600</li>
-      </ul>
-    </div>
+    <div class="tv-frame">
+      <img
+        src="assets/images/background/tv.png"
+        alt="TV Frame"
+        class="tv-image"
+      />
 
-    <!-- Link to your JavaScript file here -->
+      <canvas id="gameCanvas"></canvas>
+    </div>
     <script src="index.js"></script>
+    <!-- Link to your JavaScript file -->
   </body>
 </html>
