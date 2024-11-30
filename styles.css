@@ -1,24 +1,21 @@
-/* Ensure the canvas takes up the entire screen */
-body,
-*gamecanvas {
+body {
   margin: 0;
-  padding: 0;
-  height: 100%;
-  overflow: hidden;
-  background-image: url("assets/images/background/space.jpeg"); /* Set your background image */
-  background-repeat: no-repeat; /* Change to no-repeat if you don't want it to repeat */
-  background-position: center; /* Center the image */
-  background-attachment: fixed; /* Keep the background fixed */
-  background-size: cover; /* Makes the image cover the entire screen */
+  overflow: hidden; /* Prevent scrollbars from appearing */
+  background-color: black; /* Set a background color for the body */
+  font-family: Arial, sans-serif; /* Set a font for the game text */
 }
 
-/* Ensure the canvas takes up the entire screen */
 canvas {
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none; /* Allow clicks to pass through to the background */
+  display: block; /* Remove the inline-block space */
+  margin: 0 auto; /* Center the canvas horizontally */
+  border: 2px solid white; /* Optional: add a border around the canvas */
+}
+
+.score-lives {
+  position: absolute; /* Position it relative to the viewport */
+  top: 10px; /* Position it near the top */
+  left: 10px; /* Position it on the left */
+  color: white; /* Set text color */
+  font-size: 20px; /* Set font size */
+  z-index: 10; /* Ensure it is above the canvas */
 }
