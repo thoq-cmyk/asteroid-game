@@ -3,12 +3,15 @@ body {
   overflow: hidden; /* Prevent scrollbars from appearing */
   background-color: black; /* Set a background color for the body */
   font-family: Arial, sans-serif; /* Set a font for the game text */
+  display: flex;
+  flex-direction: column; /* Stack elements vertically */
+  align-items: center; /* Center items horizontally */
+  height: 100vh; /* Full viewport height */
 }
 
-canvas {
-  display: block; /* Remove the inline-block space */
-  margin: 0 auto; /* Center the canvas horizontally */
-  border: 2px solid white; /* Optional: add a border around the canvas */
+.header {
+  margin-top: 20px; /* Space above the title */
+  color: white; /* Title color */
 }
 
 .score-lives {
@@ -18,4 +21,30 @@ canvas {
   color: white; /* Set text color */
   font-size: 20px; /* Set font size */
   z-index: 10; /* Ensure it is above the canvas */
+}
+
+.background {
+  display: flex;
+  justify-content: center; /* Center the canvas horizontally */
+  margin-top: 20px; /* Space between the title and canvas */
+}
+
+canvas {
+  display: block; /* Remove the inline-block space */
+  border: 2px solid white; /* Optional: add a border around the canvas */
+}
+
+.leaderboard {
+  margin-top: 20px; /* Space above the leaderboard */
+  color: white; /* Leaderboard text color */
+  text-align: center; /* Center the leaderboard text */
+}
+
+.leaderboard h2 {
+  margin: 0; /* Remove default margin */
+}
+
+#leaderboard-list {
+  list-style-type: none; /* Remove bullet points */
+  padding: 0; /* Remove default padding */
 }

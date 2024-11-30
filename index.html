@@ -5,31 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles.css" />
     <title>Asteroids Game</title>
-    <link rel="stylesheet" href="styles.css" />
-
-    <style>
-      body,
-      html {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        overflow: hidden;
-      }
-      .background {
-        height: 100vh;
-        background-size: cover; /* Cover the entire viewport */
-        background-position: center; /* Center the image */
-        background-repeat: no-repeat; /* Prevent the image from repeating */
-      }
-      canvas {
-        display: block; /* Remove extra space below the canvas */
-        margin: auto; /* Center the canvas */
-      }
-    </style>
   </head>
   <body>
+    <div class="header">
+      <h1>Space Game</h1>
+      <!-- Title of the game -->
+    </div>
     <div class="background">
       <canvas id="gameCanvas"></canvas>
+      <!-- Only one canvas element for the game -->
+    </div>
+    <div class="leaderboard">
+      <h2>Leaderboard</h2>
+      <ul id="leaderboard-list">
+        <li>Player 1: 1000</li>
+        <li>Player 2: 800</li>
+        <li>Player 3: 600</li>
+      </ul>
     </div>
 
     <!-- Link to your JavaScript file here -->
