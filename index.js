@@ -395,6 +395,7 @@ function animate() {
         lasers.splice(i, 1); // Remove the laser
         enemies.splice(j, 1); // Remove the enemy
         score += 200; // Increment score for destroying enemy
+        asteroidHitSound.play();
         break; // Prevent multiple collisions in one iteration
       }
     }
