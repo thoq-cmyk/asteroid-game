@@ -8,21 +8,19 @@ canvas.height = 900;
 // Fill the canvas with a solid color for testing
 c.fillStyle = "rgba(255, 0, 0, 0.5)"; // Semi-transparent red
 c.fillRect(0, 0, canvas.width, canvas.height);
-// Load the rocket image
+
+// Load images
 const rocketImage = new Image();
 rocketImage.src = "assets/images/ROCKET/rocket.png"; // Rocket image path
 
-// Load the asteroid image
 const asteroidImage = new Image();
 asteroidImage.src = "assets/images/silver/spin-28.png"; // Asteroid image path
 
-// Load the background image
 const backgroundImage = new Image();
-backgroundImage.src = "assets/images/background/space.jpeg"; // Path to your background image
+backgroundImage.src = "assets/images/background/space.jpeg"; // Background image path
 
-// Load heart image
 const heartImage = new Image();
-heartImage.src = "assets/images/title/black-heart.png"; // Path to your heart image
+heartImage.src = "assets/images/title/black-heart.png"; // Heart image path
 let isHeartImageLoaded = false;
 heartImage.onload = () => {
   isHeartImageLoaded = true; // Set flag when image is loaded
@@ -37,30 +35,18 @@ function drawHearts(lives) {
   const heartY = 30; // y position for hearts
 
   for (let i = 0; i < lives; i++) {
-    // Draw the heart image
     c.drawImage(heartImage, heartX, heartY, heartSize, heartSize); // Draw heart image
     heartX += heartSize + 5; // Move x position for next heart
   }
 }
 
-// Inside the animate function
-function animate() {
-  window.requestAnimationFrame(animate);
-
-  // ... (existing code)
-
-  // Display remaining hearts instead of lives
-  drawHearts(player.lives);
-  c.font = "24px";
-  c.fillText("Score: " + score, canvas.width - 120, 30);
-}
-
 // Load sound effects
-const laserSound = new Audio("assets/sounds/laser.mp3"); // Replace with your file path
-const asteroidHitSound = new Audio("assets/sounds/boom.mp3"); // Replace with your file path
-const playerHitSound = new Audio("assets/sounds/life-lost.mp3"); // Replace with your file path
-const gameOverSound = new Audio("assets/sounds/game-over.mp3"); // Replace with your file path
+const laserSound = new Audio("assets/sounds/laser.mp3");
+const asteroidHitSound = new Audio("assets/sounds/boom.mp3");
+const playerHitSound = new Audio("assets/sounds/life-lost.mp3");
+const gameOverSound = new Audio("assets/sounds/game-over.mp3");
 
+// Player class
 class Player {
   constructor({ position, velocity, imageSrc }) {
     this.position = position;
@@ -68,16 +54,13 @@ class Player {
     this.rotation = 0;
     this.lives = 3; // Player starts with 3 lives
     this.radius = 15; // Collision radius
-
-    // Create a new image object for the player sprite
     this.image = new Image();
     this.image.src = imageSrc;
+    this.isImageLoaded = false;
 
-    // Ensure the image is loaded before attempting to draw
     this.image.onload = () => {
       this.isImageLoaded = true; // Flag indicating that the image is loaded
     };
-    this.isImageLoaded = false; // Initially, the image is not loaded
   }
 
   draw() {
@@ -87,10 +70,7 @@ class Player {
     c.translate(this.position.x, this.position.y);
     c.rotate(this.rotation);
     c.translate(-this.position.x, -this.position.y);
-
-    // Draw the player sprite
-    c.drawImage(this.image, this.position.x - 15, this.position.y - 15, 30, 30); // Adjust width/height as needed
-
+    c.drawImage(this.image, this.position.x - 15, this.position.y - 15, 30, 30);
     c.restore();
   }
 
@@ -101,6 +81,7 @@ class Player {
   }
 }
 
+// Laser class
 class Laser {
   constructor({ position, velocity }) {
     this.position = position;
@@ -123,6 +104,7 @@ class Laser {
   }
 }
 
+// Asteroid class
 class Asteroid {
   constructor({ position, velocity, radius, imageSrc }) {
     this.position = position;
@@ -130,17 +112,15 @@ class Asteroid {
     this.radius = radius;
     this.image = new Image();
     this.image.src = imageSrc;
+    this.isImageLoaded = false;
 
-    // Ensure the image is loaded before attempting to draw
     this.image.onload = () => {
       this.isImageLoaded = true; // Flag indicating that the image is loaded
     };
-    this.isImageLoaded = false; // Initially, the image is not loaded
   }
 
   draw() {
     if (!this.isImageLoaded) return; // Only draw if the image is loaded
-
     c.drawImage(
       this.image,
       this.position.x - this.radius,
@@ -157,7 +137,7 @@ class Asteroid {
   }
 }
 
-// New EnemyProjectile class
+// EnemyProjectile class
 class EnemyProjectile {
   constructor({ position, velocity }) {
     this.position = position;
@@ -180,6 +160,78 @@ class EnemyProjectile {
   }
 }
 
+// NewEnemy class
+class NewEnemy {
+  constructor({ position, velocity, imageSrc }) {
+    this.position = position;
+    this.velocity = velocity;
+    this.radius = 25; // Set a radius for the new enemy
+    this.image = new Image();
+    this.image.src = imageSrc;
+    this.isImageLoaded = false;
+    this.projectiles = []; // Array to hold projectiles
+
+    this.image.onload = () => {
+      this.isImageLoaded = true;
+    };
+  }
+
+  draw() {
+    if (!this.isImageLoaded) return;
+
+    c.drawImage(
+      this.image,
+      this.position.x - this.radius,
+      this.position.y - this.radius,
+      this.radius * 2,
+      this.radius * 2
+    );
+
+    // Draw projectiles
+    this.projectiles.forEach((projectile) => projectile.draw());
+  }
+
+  update() {
+    this.draw();
+    this.position.x += this.velocity.x;
+    this.position.y += this.velocity.y;
+
+    // Update projectiles
+    for (let i = this.projectiles.length - 1; i >= 0; i--) {
+      const projectile = this.projectiles[i];
+      projectile.update();
+
+      // Remove projectiles off-screen
+      if (
+        projectile.position.x + projectile.radius < 0 ||
+        projectile.position.x - projectile.radius > canvas.width ||
+        projectile.position.y - projectile.radius > canvas.height ||
+        projectile.position.y + projectile.radius < 0
+      ) {
+        this.projectiles.splice(i, 1);
+      }
+    }
+  }
+
+  shoot() {
+    const projectileVelocity = {
+      x: 0, // Adjust horizontal movement if needed
+      y: 5, // Speed of the projectile (adjust as needed)
+    };
+
+    this.projectiles.push(
+      new EnemyProjectile({
+        position: {
+          x: this.position.x,
+          y: this.position.y + this.radius, // Start from the bottom of the enemy
+        },
+        velocity: projectileVelocity,
+      })
+    );
+  }
+}
+
+// Enemy class
 class Enemy {
   constructor({ position, velocity, imageSrc }) {
     this.position = position;
@@ -187,10 +239,9 @@ class Enemy {
     this.radius = 30; // Set a radius for the enemy
     this.image = new Image();
     this.image.src = imageSrc;
-    this.isImageLoaded = false; // Flag to check if image is loaded
+    this.isImageLoaded = false;
     this.projectiles = []; // Array to hold enemy projectiles
 
-    // Ensure the image is loaded before attempting to draw
     this.image.onload = () => {
       this.isImageLoaded = true; // Flag indicating that the image is loaded
     };
@@ -327,22 +378,34 @@ window.setInterval(() => {
 
 // Generate random enemies at intervals based on score
 function spawnEnemies() {
-  if (score > 500) {
+  if (score > 500 && enemies.length < 10) {
+    // Limit the number of enemies
     const x = Math.random() * canvas.width; // Random x position
     const y = 0; // Fixed y position at the top
     const vx = (Math.random() - 0.5) * 2; // Random horizontal velocity
     const vy = 1; // Random vertical velocity
 
-    enemies.push(
-      new Enemy({
-        position: { x: x, y: y },
-        velocity: { x: vx, y: vy },
-        imageSrc: "assets/images/ufo/ufo-12.png", // Path to your enemy image
-      })
-    );
+    // Randomly decide to spawn the new enemy or the existing enemy
+    if (Math.random() < 0.5) {
+      enemies.push(
+        new NewEnemy({
+          position: { x: x, y: y },
+          velocity: { x: vx, y: vy },
+          imageSrc: "assets/ufo/ufo-boss.png", // Path to your new enemy image
+        })
+      );
+    } else {
+      enemies.push(
+        new Enemy({
+          position: { x: x, y: y },
+          velocity: { x: vx, y: vy },
+          imageSrc: "assets/images/ufo/ufo-12.png", // Path to your existing enemy image
+        })
+      );
+    }
 
     // Adjust spawn rate based on score
-    spawnRate = Math.max(1000, 5000 - Math.floor(score / 100) * 500); // Decrease spawn rate as score increases
+    spawnRate = Math.max(1000, 5000 - Math.floor(score / 100) * 500);
   }
 }
 
@@ -478,7 +541,6 @@ function animate() {
 
     // Call shoot method at intervals (e.g., every 1000ms)
     if (Math.random() < 0.01) {
-      // Adjust the probability as needed
       enemy.shoot();
     }
 
