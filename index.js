@@ -279,7 +279,7 @@ let backgroundY = 0; // Initial background Y position
 const BACKGROUND_SPEED = 1; // Speed at which the background moves
 
 // Spawn rate variables
-let spawnRate = 7000; // Initial spawn rate in milliseconds
+let spawnRate = 3000; // Initial spawn rate in milliseconds
 let lastSpawnTime = 0; // Track the last spawn time
 
 // Generate random asteroids at intervals
