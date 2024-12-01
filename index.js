@@ -20,6 +20,41 @@ asteroidImage.src = "assets/images/silver/spin-28.png"; // Asteroid image path
 const backgroundImage = new Image();
 backgroundImage.src = "assets/images/background/space.jpeg"; // Path to your background image
 
+// Load heart image
+const heartImage = new Image();
+heartImage.src = "assets/images/title/black-heart.png"; // Path to your heart image
+let isHeartImageLoaded = false;
+heartImage.onload = () => {
+  isHeartImageLoaded = true; // Set flag when image is loaded
+};
+
+// Function to draw hearts
+function drawHearts(lives) {
+  if (!isHeartImageLoaded) return; // Only draw if the image is loaded
+
+  const heartSize = 20; // Size of the heart
+  let heartX = 10; // Starting x position
+  const heartY = 30; // y position for hearts
+
+  for (let i = 0; i < lives; i++) {
+    // Draw the heart image
+    c.drawImage(heartImage, heartX, heartY, heartSize, heartSize); // Draw heart image
+    heartX += heartSize + 5; // Move x position for next heart
+  }
+}
+
+// Inside the animate function
+function animate() {
+  window.requestAnimationFrame(animate);
+
+  // ... (existing code)
+
+  // Display remaining hearts instead of lives
+  drawHearts(player.lives);
+  c.font = "24px";
+  c.fillText("Score: " + score, canvas.width - 120, 30);
+}
+
 // Load sound effects
 const laserSound = new Audio("assets/sounds/laser.mp3"); // Replace with your file path
 const asteroidHitSound = new Audio("assets/sounds/boom.mp3"); // Replace with your file path
@@ -244,7 +279,7 @@ let backgroundY = 0; // Initial background Y position
 const BACKGROUND_SPEED = 1; // Speed at which the background moves
 
 // Spawn rate variables
-let spawnRate = 5000; // Initial spawn rate in milliseconds
+let spawnRate = 7000; // Initial spawn rate in milliseconds
 let lastSpawnTime = 0; // Track the last spawn time
 
 // Generate random asteroids at intervals
@@ -505,13 +540,12 @@ function animate() {
   if (keys.d.pressed) player.rotation += ROTATIONAL_SPEED;
   else if (keys.a.pressed) player.rotation -= ROTATIONAL_SPEED;
 
-  // Display remaining lives
-  c.fillStyle = "white";
-  c.font = "20px Arial";
-  c.fillText("Lives: " + player.lives, 10, 30);
+  // Display remaining hearts instead of lives
+  drawHearts(player.lives);
 
   // Display score
-  c.fillText("Score: " + score, canvas.width - 120, 30); // Display score at top-right corner
+  c.font = "24px Arial";
+  c.fillText("Score: " + score, canvas.width - 130, 30); // Display score at top-right corner
 } // Closing brace for the animate function
 
 window.addEventListener("keydown", (event) => {
