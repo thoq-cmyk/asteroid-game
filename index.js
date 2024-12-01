@@ -127,7 +127,7 @@ class EnemyProjectile {
   constructor({ position, velocity }) {
     this.position = position;
     this.velocity = velocity;
-    this.radius = 3; // Set a radius for the projectile
+    this.radius = 2; // Set a radius for the projectile
   }
 
   draw() {
@@ -201,7 +201,7 @@ class Enemy {
   shoot() {
     const projectileVelocity = {
       x: 0, // Move straight down
-      y: 3, // Speed of the projectile (adjust as needed)
+      y: 10, // Speed of the projectile (adjust as needed)
     };
 
     this.projectiles.push(
@@ -296,7 +296,7 @@ function spawnEnemies() {
     const x = Math.random() * canvas.width; // Random x position
     const y = 0; // Fixed y position at the top
     const vx = (Math.random() - 0.5) * 2; // Random horizontal velocity
-    const vy = (Math.random() - 0.5) * 2; // Random vertical velocity
+    const vy = 1; // Random vertical velocity
 
     enemies.push(
       new Enemy({
@@ -511,7 +511,7 @@ function animate() {
   c.fillText("Lives: " + player.lives, 10, 30);
 
   // Display score
-  c.fillText("Score: " + score, canvas.width - 100, 30); // Display score at top-right corner
+  c.fillText("Score: " + score, canvas.width - 120, 30); // Display score at top-right corner
 } // Closing brace for the animate function
 
 window.addEventListener("keydown", (event) => {
