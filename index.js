@@ -339,7 +339,7 @@ let backgroundY = 0; // Initial background Y position
 const BACKGROUND_SPEED = 1; // Speed at which the background moves
 
 // Spawn rate variables
-let spawnRate = 3000; // Initial spawn rate in milliseconds
+let spawnRate = 5000; // Initial spawn rate in milliseconds
 let lastSpawnTime = 0; // Track the last spawn time
 
 // Generate random asteroids at intervals
@@ -561,7 +561,7 @@ function animate() {
       console.log(`Player hit by enemy! Lives remaining: ${player.lives}`);
       enemies.splice(i, 1); // Remove the enemy
 
-      // Game ```javascript
+      // Game 
       // over check
       if (player.lives <= 0) {
         gameOverSound.play(); // Play game over sound
