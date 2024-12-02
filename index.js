@@ -142,20 +142,20 @@ class EnemyProjectile {
   constructor({ position, velocity }) {
     this.position = position;
     this.velocity = velocity;
-    this.radius = 2; // Set a radius for the projectile
+    this.radius = 2; // Radius of the projectile
   }
 
   draw() {
     c.beginPath();
-    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-    c.fillStyle = "red"; // Change color to distinguish enemy projectiles
-    c.fill();
+    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2); // Draw a circle with a radius of 2 pixels
     c.closePath();
+    c.fillStyle = "red"; // Set fill color to red
+    c.fill(); // Fill the circle with the specified color
   }
 
   update() {
-    this.draw();
-    this.position.x += this.velocity.x; // This will be 0
+    this.draw(); // Call the draw method to render the projectile
+    this.position.x += this.velocity.x; // This will be 0 (no horizontal movement)
     this.position.y += this.velocity.y; // This will move downwards
   }
 }
@@ -165,7 +165,7 @@ class NewEnemy {
   constructor({ position, velocity, imageSrc }) {
     this.position = position;
     this.velocity = velocity;
-    this.radius = 25; // Set a radius for the new enemy
+    this.radius = 30; // Set a radius for the new enemy
     this.image = new Image();
     this.image.src = imageSrc;
     this.isImageLoaded = false;
@@ -195,6 +195,7 @@ class NewEnemy {
     this.draw();
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
+    this.position.x += Math.sin(Date.now() * 0.0008) * 2;
 
     // Update projectiles
     for (let i = this.projectiles.length - 1; i >= 0; i--) {
@@ -216,7 +217,7 @@ class NewEnemy {
   shoot() {
     const projectileVelocity = {
       x: 0, // Adjust horizontal movement if needed
-      y: 5, // Speed of the projectile (adjust as needed)
+      y: 7, // Speed of the projectile (adjust as needed)
     };
 
     this.projectiles.push(
@@ -287,7 +288,7 @@ class Enemy {
   shoot() {
     const projectileVelocity = {
       x: 0, // Move straight down
-      y: 10, // Speed of the projectile (adjust as needed)
+      y: 5, // Speed of the projectile (adjust as needed)
     };
 
     this.projectiles.push(
@@ -315,7 +316,7 @@ const keys = {
   d: { pressed: false },
 };
 
-const SPEED = 3;
+const SPEED = 2;
 const ROTATIONAL_SPEED = 0.05;
 const FRICTION = 0.97;
 const LASER_SPEED = 5;
@@ -607,7 +608,7 @@ function animate() {
 
   // Display score
   c.font = "24px Arial";
-  c.fillText("Score: " + score, canvas.width - 130, 30); // Display score at top-right corner
+  c.fillText("Score: " + score, canvas.width - 145, 40); // Display score at top-right corner
 } // Closing brace for the animate function
 
 window.addEventListener("keydown", (event) => {
