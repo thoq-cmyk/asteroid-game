@@ -295,7 +295,7 @@ class Enemy {
   shoot() {
     const projectileVelocity = {
       x: 0, // Move straight down
-      y: 5, // Speed of the projectile (adjust as needed)
+      y: 8, // Speed of the projectile (adjust as needed)
     };
 
     this.projectiles.push(
@@ -339,7 +339,7 @@ let backgroundY = 0; // Initial background Y position
 const BACKGROUND_SPEED = 1; // Speed at which the background moves
 
 // Spawn rate variables
-let spawnRate = 5000; // Initial spawn rate in milliseconds
+let spawnRate = 2000; // Initial spawn rate in milliseconds
 let lastSpawnTime = 0; // Track the last spawn time
 
 // Generate random asteroids at intervals
@@ -414,7 +414,7 @@ function spawnEnemies() {
     }
 
     // Adjust spawn rate based on score
-    spawnRate = Math.max(1000, 5000 - Math.floor(score / 100) * 500);
+    spawnRate = Math.max(300, 3000 - Math.floor(score / 100) * 300);
   }
 }
 
