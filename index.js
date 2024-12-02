@@ -561,7 +561,7 @@ function animate() {
       console.log(`Player hit by enemy! Lives remaining: ${player.lives}`);
       enemies.splice(i, 1); // Remove the enemy
 
-      // Game 
+      // Game
       // over check
       if (player.lives <= 0) {
         gameOverSound.play(); // Play game over sound
