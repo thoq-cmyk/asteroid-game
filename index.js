@@ -139,24 +139,25 @@ class Asteroid {
 
 // EnemyProjectile class
 class EnemyProjectile {
-  constructor({ position, velocity }) {
+  constructor({ position, velocity, color }) {
     this.position = position;
     this.velocity = velocity;
-    this.radius = 2; // Radius of the projectile
+    this.radius = 5; // Radius of the projectile
+    this.color = color || "red"; // Default color
   }
 
   draw() {
     c.beginPath();
-    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2); // Draw a circle with a radius of 2 pixels
+    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2); // Draw a circle
     c.closePath();
-    c.fillStyle = "red"; // Set fill color to red
+    c.fillStyle = this.color; // Set fill color
     c.fill(); // Fill the circle with the specified color
   }
 
   update() {
     this.draw(); // Call the draw method to render the projectile
-    this.position.x += this.velocity.x; // This will be 0 (no horizontal movement)
-    this.position.y += this.velocity.y; // This will move downwards
+    this.position.x += this.velocity.x; // Update position
+    this.position.y += this.velocity.y; // Update position
   }
 }
 
@@ -212,6 +213,11 @@ class NewEnemy {
         this.projectiles.splice(i, 1);
       }
     }
+
+    if (Math.random() < 0.01) {
+      // Adjust the probability as needed
+      this.shoot();
+    }
   }
 
   shoot() {
@@ -227,6 +233,7 @@ class NewEnemy {
           y: this.position.y + this.radius, // Start from the bottom of the enemy
         },
         velocity: projectileVelocity,
+        color: "blue", // Color for projectiles from NewEnemy
       })
     );
   }
@@ -298,6 +305,7 @@ class Enemy {
           y: this.position.y + this.radius, // Start from the bottom of the enemy
         },
         velocity: projectileVelocity,
+        color: "orange", // Color for projectiles from Enemy
       })
     );
   }
@@ -421,6 +429,7 @@ function circleCollision(circle1, circle2) {
   const distance = Math.sqrt(
     xDifference * xDifference + yDifference * yDifference
   );
+
   return distance <= circle1.radius + circle2.radius;
 }
 
@@ -552,7 +561,8 @@ function animate() {
       console.log(`Player hit by enemy! Lives remaining: ${player.lives}`);
       enemies.splice(i, 1); // Remove the enemy
 
-      // Game over check
+      // Game ```javascript
+      // over check
       if (player.lives <= 0) {
         gameOverSound.play(); // Play game over sound
         alert("Game Over!");
