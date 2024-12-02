@@ -324,10 +324,10 @@ const keys = {
   d: { pressed: false },
 };
 
-const SPEED = 3;
+const SPEED = 2;
 const ROTATIONAL_SPEED = 0.05;
 const FRICTION = 0.97;
-const LASER_SPEED = 3;
+const LASER_SPEED = 5;
 
 const lasers = [];
 const asteroids = [];
