@@ -307,6 +307,7 @@ class Enemy {
 }
 
 // BossEnemy class
+// BossEnemy class
 class BossEnemy {
   constructor({ position, velocity, imageSrc }) {
     this.position = position;
@@ -317,8 +318,15 @@ class BossEnemy {
     this.isImageLoaded = false;
     this.health = 500; // Set a high health value for the boss
     this.projectiles = []; // Array to hold projectiles
+
+    // Image load event
     this.image.onload = () => {
       this.isImageLoaded = true;
+
+      // Start shooting after the image has loaded
+      setInterval(() => {
+        this.shoot();
+      }, 1000); // Shoots every second
     };
   }
 
@@ -357,32 +365,30 @@ class BossEnemy {
         this.projectiles.splice(i, 1);
       }
     }
-
-    // Boss shoot logic
-    if (Math.random() < 0.02) {
-      this.shoot();
-    }
   }
 
   shoot() {
-    const projectileVelocity = {
-      x: 0, // Move straight down
-      y: 8, // Speed of the projectile (adjust as needed)
-    };
+    // Define the projectile velocities for three directions
+    const projectileVelocities = [
+      { x: 0, y: 8 }, // Straight down
+      { x: -4, y: 4 }, // Diagonal down left
+      { x: 4, y: 4 }, // Diagonal down right
+    ];
 
-    this.projectiles.push(
-      new EnemyProjectile({
-        position: {
-          x: this.position.x,
-          y: this.position.y + this.radius, // Start from the bottom of the boss
-        },
-        velocity: projectileVelocity,
-        color: "purple", // Color for projectiles from BossEnemy
-      })
-    );
+    projectileVelocities.forEach((velocity) => {
+      this.projectiles.push(
+        new EnemyProjectile({
+          position: {
+            x: this.position.x,
+            y: this.position.y + this.radius, // Start from the bottom of the boss
+          },
+          velocity: velocity, // Use the current velocity from the loop
+          color: "purple", // Color for projectiles from BossEnemy
+        })
+      );
+    });
   }
 }
-
 let bossEnemy = null; // Variable to hold the boss enemy
 
 function spawnBoss() {
@@ -390,7 +396,7 @@ function spawnBoss() {
     // Spawn boss when score reaches 1000
     bossEnemy = new BossEnemy({
       position: { x: canvas.width / 2, y: 0 }, // Start at the top center of the canvas
-      velocity: { x: 0, y: 1 }, // Move downwards
+      velocity: { x: 0, y: 0 }, // Move downwards
       imageSrc: "assets/ufo/Mothership.png", // Path to your boss image
     });
   }
@@ -728,6 +734,26 @@ function animate() {
           console.log("Boss defeated!");
           bossEnemy = null; // Remove the boss
           score += 1000; // Reward for defeating the boss
+        }
+      }
+    }
+
+    // Check collision between player and boss projectiles
+    for (let i = bossEnemy.projectiles.length - 1; i >= 0; i--) {
+      const projectile = bossEnemy.projectiles[i];
+      if (circleCollision(player, projectile)) {
+        playerHitSound.play(); // Play player hit sound
+        player.lives -= 1; // Decrease player lives
+        console.log(
+          `Player hit by boss projectile! Lives remaining: ${player.lives}`
+        );
+        bossEnemy.projectiles.splice(i, 1); // Remove the projectile
+
+        // Game over check
+        if (player.lives <= 0) {
+          gameOverSound.play(); // Play game over sound
+          alert("Game Over!");
+          window.location.reload(); // Restart the game
         }
       }
     }
