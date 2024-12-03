@@ -5,10 +5,6 @@ const c = canvas.getContext("2d");
 canvas.width = 900;
 canvas.height = 900;
 
-// Fill the canvas with a solid color for testing
-c.fillStyle = "rgba(255, 0, 0, 0.5)"; // Semi-transparent red
-c.fillRect(0, 0, canvas.width, canvas.height);
-
 // Load images
 const rocketImage = new Image();
 rocketImage.src = "assets/images/ROCKET/rocket.png"; // Rocket image path
@@ -215,7 +211,6 @@ class NewEnemy {
     }
 
     if (Math.random() < 0.01) {
-      // Adjust the probability as needed
       this.shoot();
     }
   }
@@ -311,6 +306,96 @@ class Enemy {
   }
 }
 
+// BossEnemy class
+class BossEnemy {
+  constructor({ position, velocity, imageSrc }) {
+    this.position = position;
+    this.velocity = velocity;
+    this.radius = 50; // Larger radius for the boss
+    this.image = new Image();
+    this.image.src = imageSrc;
+    this.isImageLoaded = false;
+    this.health = 500; // Set a high health value for the boss
+    this.projectiles = []; // Array to hold projectiles
+    this.image.onload = () => {
+      this.isImageLoaded = true;
+    };
+  }
+
+  draw() {
+    if (!this.isImageLoaded) return;
+
+    c.drawImage(
+      this.image,
+      this.position.x - this.radius,
+      this.position.y - this.radius,
+      this.radius * 2,
+      this.radius * 2
+    );
+
+    // Draw projectiles
+    this.projectiles.forEach((projectile) => projectile.draw());
+  }
+
+  update() {
+    this.draw();
+    this.position.x += this.velocity.x;
+    this.position.y += this.velocity.y;
+
+    // Update projectiles
+    for (let i = this.projectiles.length - 1; i >= 0; i--) {
+      const projectile = this.projectiles[i];
+      projectile.update();
+
+      // Remove projectiles off-screen
+      if (
+        projectile.position.x + projectile.radius < 0 ||
+        projectile.position.x - projectile.radius > canvas.width ||
+        projectile.position.y - projectile.radius > canvas.height ||
+        projectile.position.y + projectile.radius < 0
+      ) {
+        this.projectiles.splice(i, 1);
+      }
+    }
+
+    // Boss shoot logic
+    if (Math.random() < 0.02) {
+      this.shoot();
+    }
+  }
+
+  shoot() {
+    const projectileVelocity = {
+      x: 0, // Move straight down
+      y: 8, // Speed of the projectile (adjust as needed)
+    };
+
+    this.projectiles.push(
+      new EnemyProjectile({
+        position: {
+          x: this.position.x,
+          y: this.position.y + this.radius, // Start from the bottom of the boss
+        },
+        velocity: projectileVelocity,
+        color: "purple", // Color for projectiles from BossEnemy
+      })
+    );
+  }
+}
+
+let bossEnemy = null; // Variable to hold the boss enemy
+
+function spawnBoss() {
+  if (!bossEnemy && score >= 1000) {
+    // Spawn boss when score reaches 1000
+    bossEnemy = new BossEnemy({
+      position: { x: canvas.width / 2, y: 0 }, // Start at the top center of the canvas
+      velocity: { x: 0, y: 1 }, // Move downwards
+      imageSrc: "assets/ufo/Mothership.png", // Path to your boss image
+    });
+  }
+}
+
 // Initialize player
 const player = new Player({
   position: { x: canvas.width / 2, y: canvas.height / 2 },
@@ -337,10 +422,6 @@ let score = 0; // Initialize score
 // Background position variables
 let backgroundY = 0; // Initial background Y position
 const BACKGROUND_SPEED = 1; // Speed at which the background moves
-
-// Spawn rate variables
-let spawnRate = 2000; // Initial spawn rate in milliseconds
-let lastSpawnTime = 0; // Track the last spawn time
 
 // Generate random asteroids at intervals
 window.setInterval(() => {
@@ -412,16 +493,13 @@ function spawnEnemies() {
         })
       );
     }
-
-    // Adjust spawn rate based on score
-    spawnRate = Math.max(300, 3000 - Math.floor(score / 100) * 300);
   }
 }
 
 // Call spawnEnemies at intervals
 setInterval(() => {
   spawnEnemies();
-}, spawnRate);
+}, 2000); // Adjust spawn rate as needed
 
 function circleCollision(circle1, circle2) {
   const xDifference = circle2.position.x - circle1.position.x;
@@ -486,7 +564,7 @@ function animate() {
       }
     }
 
-    // Check collision between lasers and enemy projectiles
+    // Check collision between lasers and enemies
     for (let j = 0; j < enemies.length; j++) {
       const enemy = enemies[j];
       for (let k = enemy.projectiles.length - 1; k >= 0; k--) {
@@ -561,8 +639,7 @@ function animate() {
       console.log(`Player hit by enemy! Lives remaining: ${player.lives}`);
       enemies.splice(i, 1); // Remove the enemy
 
-      // Game
-      // over check
+      // Game over check
       if (player.lives <= 0) {
         gameOverSound.play(); // Play game over sound
         alert("Game Over!");
@@ -619,8 +696,45 @@ function animate() {
   // Display score
   c.font = "24px Arial";
   c.fillText("Score: " + score, canvas.width - 145, 40); // Display score at top-right corner
-} // Closing brace for the animate function
 
+  // Check for boss spawning
+  spawnBoss();
+
+  // Update and manage the boss if it exists
+  if (bossEnemy) {
+    bossEnemy.update();
+
+    // Check collision between player and boss
+    if (circleCollision(player, bossEnemy)) {
+      playerHitSound.play(); // Play player hit sound
+      player.lives -= 1; // Decrease player lives
+      console.log(`Player hit by boss! Lives remaining: ${player.lives}`);
+
+      // Game over check
+      if (player.lives <= 0) {
+        gameOverSound.play(); // Play game over sound
+        alert("Game Over!");
+        window.location.reload(); // Restart the game
+      }
+    }
+
+    // Check collision between player lasers and boss
+    for (let i = lasers.length - 1; i >= 0; i--) {
+      const laser = lasers[i];
+      if (circleCollision(bossEnemy, laser)) {
+        lasers.splice(i, 1); // Remove the laser
+        bossEnemy.health -= 10; // Decrease boss health
+        if (bossEnemy.health <= 0) {
+          console.log("Boss defeated!");
+          bossEnemy = null; // Remove the boss
+          score += 1000; // Reward for defeating the boss
+        }
+      }
+    }
+  }
+}
+
+// Event listeners for key presses
 window.addEventListener("keydown", (event) => {
   switch (event.code) {
     case "KeyW":
@@ -664,4 +778,5 @@ window.addEventListener("keyup", (event) => {
   }
 });
 
+// Start the animation loop
 animate();
