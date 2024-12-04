@@ -307,7 +307,6 @@ class Enemy {
 }
 
 // BossEnemy class
-// BossEnemy class
 class BossEnemy {
   constructor({ position, velocity, imageSrc }) {
     this.position = position;
@@ -389,10 +388,11 @@ class BossEnemy {
     });
   }
 }
+
 let bossEnemy = null; // Variable to hold the boss enemy
 
 function spawnBoss() {
-  if (!bossEnemy && score >= 5000) {
+  if (!bossEnemy && score >= 1000) {
     // Spawn boss when score reaches 1000
     bossEnemy = new BossEnemy({
       position: { x: canvas.width / 2, y: 0 }, // Start at the top center of the canvas
@@ -576,7 +576,8 @@ function animate() {
       for (let k = enemy.projectiles.length - 1; k >= 0; k--) {
         const projectile = enemy.projectiles[k];
         if (circleCollision(projectile, laser)) {
-          lasers.splice(i, 1); // Remove the laser
+          lasers.splice(i, 1);
+          // Remove the laser
           enemy.projectiles.splice(k, 1); // Remove the enemy projectile
           score += 50; // Increment score for destroying enemy projectile
           break; // Prevent multiple collisions in one iteration
@@ -728,17 +729,23 @@ function animate() {
     for (let i = lasers.length - 1; i >= 0; i--) {
       const laser = lasers[i];
 
-      // Check if the laser collides with the boss
-      const laserRight = laser.position.x + laser.width;
-      const laserBottom = laser.position.y + laser.height;
-      const bossRight = bossEnemy.position.x + bossEnemy.width;
-      const bossBottom = bossEnemy.position.y + bossEnemy.height;
+      // Calculate the boundaries of the laser based on its radius
+      const laserLeft = laser.position.x - laser.radius;
+      const laserRight = laser.position.x + laser.radius;
+      const laserTop = laser.position.y - laser.radius;
+      const laserBottom = laser.position.y + laser.radius;
+
+      // Calculate the boundaries of the boss
+      const bossLeft = bossEnemy.position.x - bossEnemy.radius;
+      const bossRight = bossEnemy.position.x + bossEnemy.radius;
+      const bossTop = bossEnemy.position.y - bossEnemy.radius;
+      const bossBottom = bossEnemy.position.y + bossEnemy.radius;
 
       if (
-        laser.position.x < bossRight &&
-        laserRight > bossEnemy.position.x &&
-        laser.position.y < bossBottom &&
-        laserBottom > bossEnemy.position.y
+        laserRight > bossLeft &&
+        laserLeft < bossRight &&
+        laserBottom > bossTop &&
+        laserTop < bossBottom
       ) {
         lasers.splice(i, 1); // Remove the laser from the array
         bossEnemy.health -= 10; // Decrease boss health
