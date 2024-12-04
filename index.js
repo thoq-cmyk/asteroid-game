@@ -316,7 +316,7 @@ class BossEnemy {
     this.image = new Image();
     this.image.src = imageSrc;
     this.isImageLoaded = false;
-    this.health = 500; // Set a high health value for the boss
+    this.health = 50; // Set a high health value for the boss
     this.projectiles = []; // Array to hold projectiles
 
     // Image load event
@@ -392,7 +392,7 @@ class BossEnemy {
 let bossEnemy = null; // Variable to hold the boss enemy
 
 function spawnBoss() {
-  if (!bossEnemy && score >= 1000) {
+  if (!bossEnemy && score >= 5000) {
     // Spawn boss when score reaches 1000
     bossEnemy = new BossEnemy({
       position: { x: canvas.width / 2, y: 0 }, // Start at the top center of the canvas
@@ -505,7 +505,7 @@ function spawnEnemies() {
 // Call spawnEnemies at intervals
 setInterval(() => {
   spawnEnemies();
-}, 2000); // Adjust spawn rate as needed
+}, 5000); // Adjust spawn rate as needed
 
 function circleCollision(circle1, circle2) {
   const xDifference = circle2.position.x - circle1.position.x;
@@ -727,13 +727,28 @@ function animate() {
     // Check collision between player lasers and boss
     for (let i = lasers.length - 1; i >= 0; i--) {
       const laser = lasers[i];
-      if (circleCollision(bossEnemy, laser)) {
-        lasers.splice(i, 1); // Remove the laser
+
+      // Check if the laser collides with the boss
+      const laserRight = laser.position.x + laser.width;
+      const laserBottom = laser.position.y + laser.height;
+      const bossRight = bossEnemy.position.x + bossEnemy.width;
+      const bossBottom = bossEnemy.position.y + bossEnemy.height;
+
+      if (
+        laser.position.x < bossRight &&
+        laserRight > bossEnemy.position.x &&
+        laser.position.y < bossBottom &&
+        laserBottom > bossEnemy.position.y
+      ) {
+        lasers.splice(i, 1); // Remove the laser from the array
         bossEnemy.health -= 10; // Decrease boss health
+        console.log(`Boss hit! Current health: ${bossEnemy.health}`);
+
+        // Check if the boss is defeated
         if (bossEnemy.health <= 0) {
           console.log("Boss defeated!");
           bossEnemy = null; // Remove the boss
-          score += 1000; // Reward for defeating the boss
+          // Additional logic for boss defeat can be added here
         }
       }
     }
