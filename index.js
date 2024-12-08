@@ -312,14 +312,14 @@ class Enemy {
 class StaticEnemy {
   constructor({ position, imageSrc }) {
     this.position = position;
-    this.radius = 60; // Set a radius for the static enemy
+    this.radius = 100; // Set a radius for the static enemy
     this.image = new Image();
     this.image.src = imageSrc;
     this.isImageLoaded = false;
     this.projectiles = []; // Array to hold projectiles
     this.shootInterval = 2000; // Time in milliseconds between shots
     this.lastShotTime = 0; // Time of the last shot
-    this.health = 20;
+    this.health = 30;
 
     this.image.onload = () => {
       this.isImageLoaded = true;
