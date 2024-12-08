@@ -240,24 +240,26 @@ class NewEnemy {
 }
 
 // Enemy class
+// Enemy class
 class Enemy {
   constructor({ position, velocity, imageSrc }) {
     this.position = position;
     this.velocity = velocity;
-    this.radius = 30; // Set a radius for the enemy
+    this.radius = 30;
     this.image = new Image();
     this.image.src = imageSrc;
     this.isImageLoaded = false;
-    this.projectiles = []; // Array to hold enemy projectiles
+    this.projectiles = [];
+    this.shootInterval = 2000; // Time in milliseconds between shots
+    this.lastShotTime = 0;
 
     this.image.onload = () => {
-      this.isImageLoaded = true; // Flag indicating that the image is loaded
+      this.isImageLoaded = true;
     };
   }
 
   draw() {
-    if (!this.isImageLoaded) return; // Only draw if the image is loaded
-
+    if (!this.isImageLoaded) return;
     c.drawImage(
       this.image,
       this.position.x - this.radius,
@@ -265,15 +267,19 @@ class Enemy {
       this.radius * 2,
       this.radius * 2
     );
-
-    // Draw projectiles
     this.projectiles.forEach((projectile) => projectile.draw());
   }
 
-  update() {
+  update(currentTime) {
     this.draw();
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
+
+    // Check if it's time to shoot
+    if (currentTime - this.lastShotTime >= this.shootInterval) {
+      this.shoot();
+      this.lastShotTime = currentTime; // Update the last shot time
+    }
 
     // Update projectiles
     for (let i = this.projectiles.length - 1; i >= 0; i--) {
@@ -281,31 +287,19 @@ class Enemy {
       projectile.update();
 
       // Remove projectiles off-screen
-      if (
-        projectile.position.x + projectile.radius < 0 ||
-        projectile.position.x - projectile.radius > canvas.width ||
-        projectile.position.y - projectile.radius > canvas.height ||
-        projectile.position.y + projectile.radius < 0
-      ) {
+      if (projectile.position.y > canvas.height) {
         this.projectiles.splice(i, 1);
       }
     }
   }
 
   shoot() {
-    const projectileVelocity = {
-      x: 0, // Move straight down
-      y: 8, // Speed of the projectile (adjust as needed)
-    };
-
+    const projectileVelocity = { x: 0, y: 5 }; // Adjust speed and direction as needed
     this.projectiles.push(
       new EnemyProjectile({
-        position: {
-          x: this.position.x,
-          y: this.position.y + this.radius, // Start from the bottom of the enemy
-        },
+        position: { x: this.position.x, y: this.position.y + this.radius },
         velocity: projectileVelocity,
-        color: "orange", // Color for projectiles from Enemy
+        color: "orange", // Color for UFO projectiles
       })
     );
   }
@@ -462,16 +456,14 @@ window.setInterval(() => {
   );
 }, 3000);
 
-// Generate random enemies at intervals based on score
+// Generate random enemies at intervals based on score// Generate random enemies at intervals based on score
 function spawnEnemies() {
-  // Check if the score is above 500 and there are less than 10 enemies
   if (score > 500 && enemies.length < 10) {
     const x = Math.random() * canvas.width; // Random x position
     const y = 0; // Fixed y position at the top
     const vx = 0; // No horizontal velocity for static enemy
     const vy = 1; // Random vertical velocity
 
-    // Randomly decide to spawn the new enemy, existing enemy, or static enemy
     const enemyType = Math.random();
 
     // New enemy spawns only if score is above 1000
@@ -492,8 +484,6 @@ function spawnEnemies() {
         imageSrc: "assets/images/ufo/ufo-12.png", // Path to your existing enemy image
       });
       enemies.push(ufo);
-      // Add logic for UFO to shoot its projectile
-      ufo.shootProjectile(); // Assuming shootProjectile is a method of the Enemy class
     }
     // Static enemy spawns only if score is above 3000
     else if (score > 3000) {
@@ -506,7 +496,6 @@ function spawnEnemies() {
       );
     }
 
-    // Adjust spawn rate based on score
     spawnRate = Math.max(300, 3000 - Math.floor(score / 100) * 300);
   }
 }
@@ -526,6 +515,7 @@ function circleCollision(circle1, circle2) {
   return distance <= circle1.radius + circle2.radius;
 }
 
+// Closing brace for the animate function
 function animate() {
   window.requestAnimationFrame(animate);
 
@@ -534,8 +524,6 @@ function animate() {
 
   // Draw the background image
   c.drawImage(backgroundImage, 0, backgroundY, canvas.width, canvas.height);
-
-  // Draw the background image again to create a seamless scrolling effect
   c.drawImage(
     backgroundImage,
     0,
@@ -579,20 +567,6 @@ function animate() {
       }
     }
 
-    // Check collision between lasers and enemy projectiles
-    for (let j = 0; j < enemies.length; j++) {
-      const enemy = enemies[j];
-      for (let k = enemy.projectiles.length - 1; k >= 0; k--) {
-        const projectile = enemy.projectiles[k];
-        if (circleCollision(projectile, laser)) {
-          lasers.splice(i, 1); // Remove the laser
-          enemy.projectiles.splice(k, 1); // Remove the enemy projectile
-          score += 50; // Increment score for destroying enemy projectile
-          break; // Prevent multiple collisions in one iteration
-        }
-      }
-    }
-
     // Check collision between lasers and enemies
     for (let j = 0; j < enemies.length; j++) {
       const enemy = enemies[j];
@@ -608,7 +582,6 @@ function animate() {
 
   // Update and manage asteroids
   for (let i = asteroids.length - 1; i >= 0; i--) {
-    // Check collision between player and asteroid
     const asteroid = asteroids[i];
     asteroid.update();
 
@@ -626,42 +599,13 @@ function animate() {
         window.location.reload(); // Restart the game
       }
     }
-
-    // Remove asteroids off-screen
-    if (
-      asteroid.position.x + asteroid.radius < 0 ||
-      asteroid.position.x - asteroid.radius > canvas.width ||
-      asteroid.position.y - asteroid.radius > canvas.height ||
-      asteroid.position.y + asteroid.radius < 0
-    ) {
-      asteroids.splice(i, 1);
-    }
   }
 
   // Update and manage enemies
+  const currentTime = Date.now(); // Get the current time
   for (let i = enemies.length - 1; i >= 0; i--) {
     const enemy = enemies[i];
-    enemy.update();
-
-    // Call shoot method at intervals (e.g., every 2000ms for static enemies)
-    if (enemy instanceof StaticEnemy && Math.random() < 0.02) {
-      enemy.shoot();
-    }
-
-    // Check collision between player and enemy
-    if (circleCollision(player, enemy)) {
-      playerHitSound.play(); // Play player hit sound
-      player.lives -= 1; // Decrease player lives
-      console.log(`Player hit by enemy! Lives remaining: ${player.lives}`);
-      enemies.splice(i, 1); // Remove the enemy
-
-      // Game over check
-      if (player.lives <= 0) {
-        gameOverSound.play(); // Play game over sound
-        alert("Game Over!");
-        window.location.reload(); // Restart the game
-      }
-    }
+    enemy.update(currentTime); // Pass current time to update method
 
     // Check collision between enemy projectiles and player
     for (let j = enemy.projectiles.length - 1; j >= 0; j--) {
@@ -712,7 +656,7 @@ function animate() {
   // Display score
   c.font = "24px Arial";
   c.fillText("Score: " + score, canvas.width - 145, 40); // Display score at top-right corner
-} // Closing brace for the animate function
+}
 
 window.addEventListener("keydown", (event) => {
   switch (event.code) {
