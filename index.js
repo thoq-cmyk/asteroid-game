@@ -171,6 +171,7 @@ class NewEnemy {
     this.image.src = imageSrc;
     this.isImageLoaded = false;
     this.projectiles = []; // Array to hold projectiles
+    this.health = 1;
 
     this.image.onload = () => {
       this.isImageLoaded = true;
@@ -252,6 +253,7 @@ class Enemy {
     this.projectiles = [];
     this.shootInterval = 2000; // Time in milliseconds between shots
     this.lastShotTime = 0;
+    this.health = 1;
 
     this.image.onload = () => {
       this.isImageLoaded = true;
@@ -316,6 +318,7 @@ class StaticEnemy {
     this.projectiles = []; // Array to hold projectiles
     this.shootInterval = 2000; // Time in milliseconds between shots
     this.lastShotTime = 0; // Time of the last shot
+    this.health = 5;
 
     this.image.onload = () => {
       this.isImageLoaded = true;
@@ -577,14 +580,16 @@ function animate() {
         break; // Prevent multiple collisions in one iteration
       }
     }
-
     // Check collision between lasers and enemies
     for (let j = 0; j < enemies.length; j++) {
       const enemy = enemies[j];
       if (circleCollision(enemy, laser)) {
         lasers.splice(i, 1); // Remove the laser
-        enemies.splice(j, 1); // Remove the enemy
-        score += 200; // Increment score for destroying enemy
+        enemy.health -= 1; // Decrease enemy health
+        if (enemy.health <= 0) {
+          enemies.splice(j, 1); // Remove the enemy if health is 0
+          score += 200; // Increment score for destroying enemy
+        }
         asteroidHitSound.play();
         break; // Prevent multiple collisions in one iteration
       }
