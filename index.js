@@ -370,26 +370,11 @@ class StaticEnemy {
   }
 
   shoot() {
-    // Define the velocities for the three projectiles
-    const velocities = [
-      { x: 0, y: 5 }, // Straight down
-      { x: -2, y: 5 }, // Diagonal down-left
-      { x: 2, y: 5 }, // Diagonal down-right
-    ];
+    const projectileVelocity = {
+      x: 0, // Move straight down
+      y: 5, // Speed of the projectile (adjust as needed)
+    };
 
-    // Loop through the velocities and create projectiles
-    for (const velocity of velocities) {
-      this.projectiles.push(
-        new EnemyProjectile({
-          position: {
-            x: this.position.x,
-            y: this.position.y + this.radius, // Start from the bottom of the enemy
-          },
-          velocity: velocity,
-          color: "purple", // Color for projectiles from StaticEnemy
-        })
-      );
-    }
     this.projectiles.push(
       new EnemyProjectile({
         position: {
@@ -478,16 +463,40 @@ window.setInterval(() => {
 }, 3000);
 
 // Generate random enemies at intervals based on score
-let staticEnemySpawned = false; // Flag to track if the StaticEnemy has been spawned
-
 function spawnEnemies() {
-  // Check if we can spawn any enemies
-  if (enemies.length < 10) {
-    // Spawn StaticEnemy if score is above 3000 and it hasn't been spawned yet
-    if (score > 3000 && !staticEnemySpawned) {
-      const x = canvas.width / 2; // Center x position
-      const y = 0; // Fixed y position at the top
+  // Check if the score is above 500 and there are less than 10 enemies
+  if (score > 500 && enemies.length < 10) {
+    const x = Math.random() * canvas.width; // Random x position
+    const y = 0; // Fixed y position at the top
+    const vx = 0; // No horizontal velocity for static enemy
+    const vy = 1; // Random vertical velocity
 
+    // Randomly decide to spawn the new enemy, existing enemy, or static enemy
+    const enemyType = Math.random();
+
+    // New enemy spawns only if score is above 1000
+    if (score > 1000 && enemyType < 0.33) {
+      enemies.push(
+        new NewEnemy({
+          position: { x: x, y: y },
+          velocity: { x: vx, y: vy },
+          imageSrc: "assets/ufo/ufo-boss.png", // Path to your new enemy image
+        })
+      );
+    }
+    // Existing enemy (UFO) spawns if score is above 500
+    else if (score > 500 && enemyType < 0.66) {
+      const ufo = new Enemy({
+        position: { x: x, y: y },
+        velocity: { x: vx, y: vy },
+        imageSrc: "assets/images/ufo/ufo-12.png", // Path to your existing enemy image
+      });
+      enemies.push(ufo);
+      // Add logic for UFO to shoot its projectile
+      ufo.shootProjectile(); // Assuming shootProjectile is a method of the Enemy class
+    }
+    // Static enemy spawns only if score is above 3000
+    else if (score > 3000) {
       enemies.push(
         new StaticEnemy({
           position: { x: x, y: y },
@@ -495,34 +504,6 @@ function spawnEnemies() {
             "/Users/tanzhoq/Desktop/asteroid.project/assets/ufo/Mothership.png", // Path to your static enemy image
         })
       );
-
-      staticEnemySpawned = true; // Set the flag to true after spawning
-    } else if (score > 500) {
-      // Randomly decide to spawn the new enemy or existing enemy
-      const x = Math.random() * canvas.width; // Random x position
-      const y = 0; // Fixed y position at the top
-      const vx = 0; // No horizontal velocity for static enemy
-      const vy = 1; // Random vertical velocity
-
-      const enemyType = Math.random();
-      if (enemyType < 0.33) {
-        enemies.push(
-          new NewEnemy({
-            position: { x: x, y: y },
-            velocity: { x: vx, y: vy },
-            imageSrc: "assets/ufo/ufo-boss.png", // Path to your new enemy image
-          })
-        );
-      } else if (enemyType < 0.66) {
-        const enemy = new Enemy({
-          position: { x: canvas.width / 2, y: 0 },
-          velocity: { x: 0, y: 5 },
-          imageSrc: "assets/images/ufo/ufo-12.png", // Path to your existing enemy image
-        });
-        enemies.push(enemy);
-        enemy.shoot(); // Ensure the enemy starts shooting
-      }
-      // Note: StaticEnemy spawning is handled above, so we don't need to handle it here.
     }
 
     // Adjust spawn rate based on score
