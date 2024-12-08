@@ -371,6 +371,15 @@ class StaticEnemy {
       x: 0, // Move straight down
       y: 5, // Speed of the projectile (adjust as needed)
     };
+    const projectileVelocityDiagonal1 = {
+      x: 3, // Diagonal right
+      y: 3, // Diagonal down
+    };
+
+    const projectileVelocityDiagonal2 = {
+      x: -3, // Diagonal left
+      y: 3, // Diagonal down
+    };
 
     this.projectiles.push(
       new EnemyProjectile({
@@ -380,6 +389,28 @@ class StaticEnemy {
         },
         velocity: projectileVelocity,
         color: "purple", // Color for projectiles from StaticEnemy
+      })
+    );
+    // Shoot two diagonal projectiles
+    this.projectiles.push(
+      new EnemyProjectile({
+        position: {
+          x: this.position.x,
+          y: this.position.y + this.radius, // Start from the bottom of the enemy
+        },
+        velocity: projectileVelocityDiagonal1,
+        color: "purple", // Color for diagonal projectiles
+      })
+    );
+
+    this.projectiles.push(
+      new EnemyProjectile({
+        position: {
+          x: this.position.x,
+          y: this.position.y + this.radius, // Start from the bottom of the enemy
+        },
+        velocity: projectileVelocityDiagonal2,
+        color: "purple", // Color for diagonal projectiles
       })
     );
   }
