@@ -478,33 +478,16 @@ window.setInterval(() => {
 }, 3000);
 
 // Generate random enemies at intervals based on score
-function spawnEnemies() {
-  if (score > 500 && enemies.length < 10) {
-    const x = Math.random() * canvas.width; // Random x position
-    const y = 0; // Fixed y position at the top
-    const vx = 0;
-    // No horizontal velocity for static enemy
-    const vy = 1; // Random vertical velocity
+let staticEnemySpawned = false; // Flag to track if the StaticEnemy has been spawned
 
-    // Randomly decide to spawn the new enemy, existing enemy, or static enemy
-    const enemyType = Math.random();
-    if (enemyType < 0.33) {
-      enemies.push(
-        new NewEnemy({
-          position: { x: x, y: y },
-          velocity: { x: vx, y: vy },
-          imageSrc: "assets/ufo/ufo-boss.png", // Path to your new enemy image
-        })
-      );
-    } else if (enemyType < 0.66) {
-      enemies.push(
-        new Enemy({
-          position: { x: x, y: y },
-          velocity: { x: vx, y: vy },
-          imageSrc: "assets/images/ufo/ufo-12.png", // Path to your existing enemy image
-        })
-      );
-    } else {
+function spawnEnemies() {
+  // Check if we can spawn any enemies
+  if (enemies.length < 10) {
+    // Spawn StaticEnemy if score is above 3000 and it hasn't been spawned yet
+    if (score > 3000 && !staticEnemySpawned) {
+      const x = canvas.width / 2; // Center x position
+      const y = 0; // Fixed y position at the top
+
       enemies.push(
         new StaticEnemy({
           position: { x: x, y: y },
@@ -512,6 +495,34 @@ function spawnEnemies() {
             "/Users/tanzhoq/Desktop/asteroid.project/assets/ufo/Mothership.png", // Path to your static enemy image
         })
       );
+
+      staticEnemySpawned = true; // Set the flag to true after spawning
+    } else if (score > 500) {
+      // Randomly decide to spawn the new enemy or existing enemy
+      const x = Math.random() * canvas.width; // Random x position
+      const y = 0; // Fixed y position at the top
+      const vx = 0; // No horizontal velocity for static enemy
+      const vy = 1; // Random vertical velocity
+
+      const enemyType = Math.random();
+      if (enemyType < 0.33) {
+        enemies.push(
+          new NewEnemy({
+            position: { x: x, y: y },
+            velocity: { x: vx, y: vy },
+            imageSrc: "assets/ufo/ufo-boss.png", // Path to your new enemy image
+          })
+        );
+      } else if (enemyType < 0.66) {
+        const enemy = new Enemy({
+          position: { x: x, y: y },
+          velocity: { x: vx, y: vy },
+          imageSrc: "assets/images/ufo/ufo-12.png", // Path to your existing enemy image
+        });
+        enemies.push(enemy);
+        enemy.shoot(); // Ensure the enemy starts shooting
+      }
+      // Note: StaticEnemy spawning is handled above, so we don't need to handle it here.
     }
 
     // Adjust spawn rate based on score
