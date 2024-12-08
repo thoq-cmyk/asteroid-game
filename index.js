@@ -457,39 +457,46 @@ window.setInterval(() => {
 }, 3000);
 
 // Generate random enemies at intervals based on score// Generate random enemies at intervals based on score
+// Generate random enemies at intervals based on score
+// Generate random enemies at intervals based on score
 function spawnEnemies() {
   if (score > 500 && enemies.length < 10) {
-    const x = Math.random() * canvas.width; // Random x position
-    const y = 0; // Fixed y position at the top
-    const vx = 0; // No horizontal velocity for static enemy
-    const vy = 1; // Random vertical velocity
+    let x, y, vx, vy;
 
+    // Check the enemy type to spawn
     const enemyType = Math.random();
 
     // New enemy spawns only if score is above 1000
     if (score > 1000 && enemyType < 0.33) {
+      x = Math.random() * canvas.width; // Random x position
+      y = 0; // Fixed y position at the top
       enemies.push(
         new NewEnemy({
           position: { x: x, y: y },
-          velocity: { x: vx, y: vy },
+          velocity: { x: 0, y: 1 },
           imageSrc: "assets/ufo/ufo-boss.png", // Path to your new enemy image
         })
       );
     }
     // Existing enemy (UFO) spawns if score is above 500
     else if (score > 500 && enemyType < 0.66) {
+      x = Math.random() * canvas.width; // Random x position
+      y = 0; // Fixed y position at the top
       const ufo = new Enemy({
         position: { x: x, y: y },
-        velocity: { x: vx, y: vy },
+        velocity: { x: 0, y: 1 },
         imageSrc: "assets/images/ufo/ufo-12.png", // Path to your existing enemy image
       });
       enemies.push(ufo);
     }
     // Static enemy spawns only if score is above 3000
     else if (score > 3000) {
+      // Set position to the top middle of the canvas
+      const middleX = canvas.width / 2; // Middle x position
+      const topY = 0; // Fixed y position at the top
       enemies.push(
         new StaticEnemy({
-          position: { x: x, y: y },
+          position: { x: middleX, y: topY }, // Spawn at the top middle
           imageSrc:
             "/Users/tanzhoq/Desktop/asteroid.project/assets/ufo/Mothership.png", // Path to your static enemy image
         })
