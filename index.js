@@ -370,11 +370,26 @@ class StaticEnemy {
   }
 
   shoot() {
-    const projectileVelocity = {
-      x: 0, // Move straight down
-      y: 5, // Speed of the projectile (adjust as needed)
-    };
+    // Define the velocities for the three projectiles
+    const velocities = [
+      { x: 0, y: 5 }, // Straight down
+      { x: -2, y: 5 }, // Diagonal down-left
+      { x: 2, y: 5 }, // Diagonal down-right
+    ];
 
+    // Loop through the velocities and create projectiles
+    for (const velocity of velocities) {
+      this.projectiles.push(
+        new EnemyProjectile({
+          position: {
+            x: this.position.x,
+            y: this.position.y + this.radius, // Start from the bottom of the enemy
+          },
+          velocity: velocity,
+          color: "purple", // Color for projectiles from StaticEnemy
+        })
+      );
+    }
     this.projectiles.push(
       new EnemyProjectile({
         position: {
