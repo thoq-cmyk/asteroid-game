@@ -276,6 +276,7 @@ class Enemy {
     this.draw();
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
+    this.position.x -= Math.sin(currentTime * 0.0008) * 2;
 
     // Check if it's time to shoot
     if (currentTime - this.lastShotTime >= this.shootInterval) {
