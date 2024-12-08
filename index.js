@@ -515,8 +515,8 @@ function spawnEnemies() {
         );
       } else if (enemyType < 0.66) {
         const enemy = new Enemy({
-          position: { x: x, y: y },
-          velocity: { x: vx, y: vy },
+          position: { x: canvas.width / 2, y: 0 },
+          velocity: { x: 0, y: 5 },
           imageSrc: "assets/images/ufo/ufo-12.png", // Path to your existing enemy image
         });
         enemies.push(enemy);
