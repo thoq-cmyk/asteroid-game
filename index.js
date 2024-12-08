@@ -259,7 +259,7 @@ class Enemy {
       this.isImageLoaded = true;
     };
   }
-
+  //test
   draw() {
     if (!this.isImageLoaded) return;
     c.drawImage(
