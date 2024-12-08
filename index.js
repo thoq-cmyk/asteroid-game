@@ -459,6 +459,9 @@ window.setInterval(() => {
 // Generate random enemies at intervals based on score// Generate random enemies at intervals based on score
 // Generate random enemies at intervals based on score
 // Generate random enemies at intervals based on score
+let staticEnemySpawned = false; // Flag to track if the static enemy has been spawned
+
+// Generate random enemies at intervals based on score
 function spawnEnemies() {
   if (score > 500 && enemies.length < 10) {
     let x, y, vx, vy;
@@ -489,8 +492,8 @@ function spawnEnemies() {
       });
       enemies.push(ufo);
     }
-    // Static enemy spawns only if score is above 3000
-    else if (score > 3000) {
+    // Static enemy spawns only if score is above 3000 and hasn't been spawned yet
+    else if (score > 3000 && !staticEnemySpawned) {
       // Set position to the top middle of the canvas
       const middleX = canvas.width / 2; // Middle x position
       const topY = 0; // Fixed y position at the top
@@ -501,6 +504,7 @@ function spawnEnemies() {
             "/Users/tanzhoq/Desktop/asteroid.project/assets/ufo/Mothership.png", // Path to your static enemy image
         })
       );
+      staticEnemySpawned = true; // Set the flag to true after spawning
     }
 
     spawnRate = Math.max(300, 3000 - Math.floor(score / 100) * 300);
