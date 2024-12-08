@@ -171,7 +171,7 @@ class NewEnemy {
     this.image.src = imageSrc;
     this.isImageLoaded = false;
     this.projectiles = []; // Array to hold projectiles
-    this.health = 1;
+    this.health = 3;
 
     this.image.onload = () => {
       this.isImageLoaded = true;
@@ -253,7 +253,7 @@ class Enemy {
     this.projectiles = [];
     this.shootInterval = 2000; // Time in milliseconds between shots
     this.lastShotTime = 0;
-    this.health = 1;
+    this.health = 3;
 
     this.image.onload = () => {
       this.isImageLoaded = true;
@@ -318,7 +318,7 @@ class StaticEnemy {
     this.projectiles = []; // Array to hold projectiles
     this.shootInterval = 2000; // Time in milliseconds between shots
     this.lastShotTime = 0; // Time of the last shot
-    this.health = 5;
+    this.health = 20;
 
     this.image.onload = () => {
       this.isImageLoaded = true;
