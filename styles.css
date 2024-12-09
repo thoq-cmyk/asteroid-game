@@ -6,7 +6,7 @@ body {
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
   height: 100vh; /* Full viewport height */
-  background-color: black; /* Optional: Set a background color */
+  background-image: url("assets/images/background/space.jpeg"); /* Optional: Set a background color */
 }
 
 .button {
