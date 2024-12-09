@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function startGame() {
     isGameRunning = true; // Set the game state to running
+    isGameStarted = true; // Set the game started flag to true
     console.log("Game Started!"); // For testing purposes
     startButton.style.display = "none"; // Hide the start button
     canvas.style.display = "block"; // Show the canvas
@@ -492,6 +493,7 @@ let lastSpawnTime = 0; // Track the last spawn time
 
 // Generate random asteroids at intervals
 window.setInterval(() => {
+  if (!isGameStarted) return;
   const index = Math.floor(Math.random() * 4);
   let x, y, vx, vy;
   const radius = 50 * Math.random() + 10;
