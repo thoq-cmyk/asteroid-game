@@ -95,7 +95,7 @@ class Player {
     this.position = position;
     this.velocity = velocity;
     this.rotation = 0;
-    this.lives = 3; // Player starts with 3 lives
+    this.lives = 15; // Player starts with 3 lives
     this.radius = 15; // Collision radius
     this.image = new Image();
     this.image.src = imageSrc;
@@ -538,11 +538,11 @@ window.setInterval(() => {
 // Generate random enemies at intervals based on score// Generate random enemies at intervals based on score
 // Generate random enemies at intervals based on score
 // Generate random enemies at intervals based on score
-let lastStaticEnemySpawnTime = 0; // Track the last spawn time
-const staticEnemyCooldown = 2000; // Cooldown period in milliseconds (2000 milliseconds or 2 seconds)
-let staticEnemyActive = false; // Track if a static enemy is currently active
-let staticEnemySpawnedAt3000 = false; // Track if the static enemy has spawned at score 3000
 
+let lastStaticEnemySpawnTime = 0; // Track the last spawn time
+const staticEnemyCooldown = 2000; // Flag to track if the static enemy has been spawned
+let staticEnemySpawned = false;
+// Generate random enemies at intervals based on score
 function spawnEnemies() {
   if (score > 500 && enemies.length < 10) {
     let x, y, vx, vy;
@@ -573,38 +573,31 @@ function spawnEnemies() {
       });
       enemies.push(ufo);
     }
-
-    // Static enemy spawns at score 3000 and can respawn after cooldown
+    // Static enemy spawns only if score is above 3000 and hasn't been spawned yet
     const currentTime = Date.now(); // Get the current time
-    if (score === 3000 && !staticEnemySpawnedAt3000) {
+    if (
+      score > 0 &&
+      score % 3000 === 0 &&
+      currentTime - lastStaticEnemySpawnTime >= staticEnemyCooldown
+    ) {
       // Set position to the top middle of the canvas
       const middleX = canvas.width / 2; // Middle x position
       const topY = 0; // Fixed y position at the top
-      const staticEnemy = new StaticEnemy({
-        position: { x: middleX, y: topY }, // Spawn at the top middle
-        imageSrc:
-          "/Users/tanzhoq/Desktop/asteroid.project/assets/ufo/Mothership.png", // Path to your static enemy image
-      });
+      enemies.push(
+        new StaticEnemy({
+          position: { x: middleX, y: topY }, // Spawn at the top middle
+          imageSrc:
+            "/Users/tanzhoq/Desktop/asteroid.project/assets/ufo/Mothership.png", // Path to your static enemy image
+        })
+      );
       enemies.push(staticEnemy);
-      staticEnemyActive = true; // Mark the static enemy as active
-      staticEnemySpawnedAt3000 = true; // Mark that the static enemy has spawned at score 3000
+      staticEnemyActive = true;
       lastStaticEnemySpawnTime = currentTime; // Update the last spawn time
-    }
-
-    // Check if the static enemy has been destroyed and if the cooldown has passed
-    if (
-      !staticEnemyActive &&
-      currentTime - lastStaticEnemySpawnTime >= staticEnemyCooldown
-    ) {
-      staticEnemyActive = false; // Reset the active state
-      staticEnemySpawnedAt3000 = false; // Allow it to spawn again
     }
 
     spawnRate = Math.max(300, 3000 - Math.floor(score / 100) * 300);
   }
 }
-
-// In your game loop, check if the static enemy has been destroyed
 function updateEnemies() {
   for (let i = enemies.length - 1; i >= 0; i--) {
     const enemy = enemies[i];
@@ -614,8 +607,6 @@ function updateEnemies() {
       if (enemy.health <= 0) {
         staticEnemyActive = false; // Mark the static enemy as inactive
         enemies.splice(i, 1); // Remove the enemy from the array
-        lastStaticEnemySpawnTime = Date.now(); // Record the time it was destroyed
-        staticEnemySpawnedAt3000 = false; // Reset the spawn flag to allow respawn
       }
     }
     // Other enemy update logic...
