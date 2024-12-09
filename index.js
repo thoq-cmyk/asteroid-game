@@ -1,3 +1,45 @@
+document.addEventListener("DOMContentLoaded", function () {
+  const startButton = document.getElementById("startButton");
+  const canvas = document.getElementById("gameCanvas");
+  let isGameRunning = false;
+
+  // Add click event listener to the start button
+  startButton.addEventListener("click", function () {
+    startGame(); // Call the function to start the game
+  });
+
+  function startGame() {
+    isGameRunning = true; // Set the game state to running
+    console.log("Game Started!"); // For testing purposes
+    startButton.style.display = "none"; // Hide the start button
+    canvas.style.display = "block"; // Show the canvas
+    gameLoop(); // Start the game loop
+  }
+
+  function gameLoop() {
+    if (!isGameRunning) return; // Exit if the game is not running
+
+    // Your game logic here
+    console.log("Game is running..."); // For testing purposes
+
+    // Call the game loop again using requestAnimationFrame for smooth animation
+    requestAnimationFrame(gameLoop);
+  }
+
+  // Optional: Function to pause the game (if needed)
+  function pauseGame() {
+    isGameRunning = false;
+    console.log("Game Paused!"); // For testing purposes
+  }
+
+  // Optional: Add a way to pause the game (e.g., a key press)
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "p") {
+      // Press 'p' to pause
+      pauseGame();
+    }
+  });
+});
 const canvas = document.getElementById("gameCanvas");
 const c = canvas.getContext("2d");
 

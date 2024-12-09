@@ -9,6 +9,15 @@ body {
   background-color: black; /* Optional: Set a background color */
 }
 
+.button {
+  display: block;
+  width: 200px; /* Set a specific width */
+  height: 50px; /* Set a specific height */
+  margin: 20px auto; /* Center the button */
+  cursor: pointer; /* Change cursor to pointer on hover */
+  z-index: 3; /* Ensure the button is above other elements */
+}
+
 .tv-frame {
   position: relative;
   width: 800px; /* Use a percentage of the viewport width */
@@ -16,8 +25,9 @@ body {
   height: auto; /* Auto height to maintain aspect ratio */
   aspect-ratio: 1; /* Maintain square aspect ratio */
   display: flex;
-  justify-content: center; /* Center the canvas inside */
-  align-items: center; /* Center the canvas inside */
+  flex-direction: column; /* Stack children vertically */
+  justify-content: center; /* Center the canvas and button vertically */
+  align-items: center; /* Center the canvas and button horizontally */
   overflow: visible; /* Ensure overflow is visible */
   background-color: transparent; /* Make the background transparent */
 }
@@ -35,12 +45,11 @@ body {
 }
 
 canvas {
-  position: absolute;
+  position: absolute; /* Keep it absolute to overlay on the TV image */
   width: 88%; /* Use a percentage of the TV frame */
   height: 68%; /* Use a percentage of the TV frame */
   border: none; /* Remove any border */
   background-color: white; /* Make the canvas background transparent */
-  position: relative; /* Change to relative positioning */
   z-index: 2; /* Ensure the canvas is above the TV image */
   border-radius: 20px; /* Set rounded corners */
   display: flex;
