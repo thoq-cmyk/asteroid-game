@@ -746,8 +746,8 @@ function animate() {
   drawHearts(player.lives);
 
   // Display score
-  c.font = "24px Arial";
-  c.fillText("Score: " + score, canvas.width - 145, 40); // Display score at top-right corner
+  c.font = "24px Courier";
+  c.fillText("Score: " + score, canvas.width - 180, 50); // Display score at top-right corner
 }
 
 window.addEventListener("keydown", (event) => {
