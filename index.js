@@ -362,7 +362,7 @@ class StaticEnemy {
     this.projectiles = []; // Array to hold projectiles
     this.shootInterval = 2000; // Time in milliseconds between shots
     this.lastShotTime = 0; // Time of the last shot
-    this.health = 30;
+    this.health = 50;
 
     this.image.onload = () => {
       this.isImageLoaded = true;
@@ -538,8 +538,10 @@ window.setInterval(() => {
 // Generate random enemies at intervals based on score// Generate random enemies at intervals based on score
 // Generate random enemies at intervals based on score
 // Generate random enemies at intervals based on score
-let staticEnemySpawned = false; // Flag to track if the static enemy has been spawned
 
+let lastStaticEnemySpawnTime = 0; // Track the last spawn time
+const staticEnemyCooldown = 2000; // Flag to track if the static enemy has been spawned
+let staticEnemySpawned = false;
 // Generate random enemies at intervals based on score
 function spawnEnemies() {
   if (score > 500 && enemies.length < 10) {
@@ -572,7 +574,12 @@ function spawnEnemies() {
       enemies.push(ufo);
     }
     // Static enemy spawns only if score is above 3000 and hasn't been spawned yet
-    else if (score > 3000 && !staticEnemySpawned) {
+    const currentTime = Date.now(); // Get the current time
+    if (
+      score > 0 &&
+      score % 3000 === 0 &&
+      currentTime - lastStaticEnemySpawnTime >= staticEnemyCooldown
+    ) {
       // Set position to the top middle of the canvas
       const middleX = canvas.width / 2; // Middle x position
       const topY = 0; // Fixed y position at the top
@@ -583,10 +590,26 @@ function spawnEnemies() {
             "/Users/tanzhoq/Desktop/asteroid.project/assets/ufo/Mothership.png", // Path to your static enemy image
         })
       );
-      staticEnemySpawned = true; // Set the flag to true after spawning
+      enemies.push(staticEnemy);
+      staticEnemyActive = true;
+      lastStaticEnemySpawnTime = currentTime; // Update the last spawn time
     }
 
     spawnRate = Math.max(300, 3000 - Math.floor(score / 100) * 300);
+  }
+}
+function updateEnemies() {
+  for (let i = enemies.length - 1; i >= 0; i--) {
+    const enemy = enemies[i];
+
+    // Check if the enemy is a static enemy and if it has been destroyed
+    if (enemy instanceof StaticEnemy) {
+      if (enemy.health <= 0) {
+        staticEnemyActive = false; // Mark the static enemy as inactive
+        enemies.splice(i, 1); // Remove the enemy from the array
+      }
+    }
+    // Other enemy update logic...
   }
 }
 
