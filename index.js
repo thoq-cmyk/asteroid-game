@@ -73,8 +73,8 @@ heartImage.onload = () => {
 function drawHearts(lives) {
   if (!isHeartImageLoaded) return; // Only draw if the image is loaded
 
-  const heartSize = 20; // Size of the heart
-  let heartX = 10; // Starting x position
+  const heartSize = 40; // Size of the heart
+  let heartX = 50; // Starting x position
   const heartY = 30; // y position for hearts
 
   for (let i = 0; i < lives; i++) {
@@ -95,7 +95,7 @@ class Player {
     this.position = position;
     this.velocity = velocity;
     this.rotation = 0;
-    this.lives = 15; // Player starts with 3 lives
+    this.lives = 3; // Player starts with 3 lives
     this.radius = 15; // Collision radius
     this.image = new Image();
     this.image.src = imageSrc;
@@ -768,7 +768,7 @@ function animate() {
   drawHearts(player.lives);
 
   // Display score
-  c.font = "24px Courier";
+  c.font = "24px 'Lacquer', cursive";
   c.fillText("Score: " + score, canvas.width - 180, 50); // Display score at top-right corner
 }
 
