@@ -587,7 +587,8 @@ function spawnEnemies() {
         enemies.push(
           new StaticEnemy({
             position: { x: middleX, y: topY }, // Spawn at the top middle
-            imageSrc: "assets/ufo/Mothership.png", // Path to your static enemy image
+            imageSrc:
+              "/Users/tanzhoq/Desktop/asteroid.project/assets/images/ufo/Mothership.png", // Path to your static enemy image
           })
         );
         staticEnemySpawnedAt.push(threshold); // Mark this threshold as spawned
