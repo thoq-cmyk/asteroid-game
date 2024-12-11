@@ -57,3 +57,22 @@ canvas {
   border-radius: 20px; /* Set rounded corners */
   display: flex;
 }
+
+.controls {
+  position: relative; /* Ensure it is positioned relative to the tv-frame */
+  z-index: 4; /* Set a higher z-index to ensure it appears above other elements */
+  text-align: center; /* Center the text */
+  margin-top: 20px; /* Add some space above the controls */
+  color: white; /* Change text color to white for better visibility */
+  font-family: "Lacquer", sans-serif; /* Use the same font as the rest of the game */
+}
+
+.controls h2 {
+  font-size: 24px; /* Adjust the size of the heading */
+  margin-bottom: 10px; /* Space below the heading */
+}
+
+.controls p {
+  font-size: 16px; /* Adjust the size of the paragraph text */
+  margin: 5px 0; /* Space between paragraphs */
+}

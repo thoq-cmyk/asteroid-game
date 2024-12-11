@@ -1,13 +1,18 @@
 document.addEventListener("DOMContentLoaded", function () {
   const startButton = document.getElementById("startButton");
   const canvas = document.getElementById("gameCanvas");
+  const controls = document.getElementById("controls"); // Get the controls section
   let isGameRunning = false;
 
   // Add click event listener to the start button
   startButton.addEventListener("click", function () {
     startGame(); // Call the function to start the game
   });
-
+  // Add an event listener to the start button
+  startButton.addEventListener("click", function () {
+    startGame();
+    controls.style.display = "none";
+  });
   function startGame() {
     isGameRunning = true; // Set the game state to running
     isGameStarted = true; // Set the game started flag to true
@@ -462,7 +467,7 @@ class StaticEnemy {
 
 // Initialize player
 const player = new Player({
-  position: { x: canvas.width / 2, y: canvas.height / 2 },
+  position: { x: canvas.width / 2, y: canvas.height / 2 - 40 },
   velocity: { x: 0, y: 0 },
   imageSrc: "assets/images/ROCKET/rocket.png", // Rocket image path for the player
 });
