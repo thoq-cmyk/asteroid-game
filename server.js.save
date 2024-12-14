@@ -1,0 +1,44 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(cors());
+app.use(bodyParser.json());
+
+// Connect to MongoDB
+mongoose.connect('mongodb://localhost:27017/leaderboard', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+});
+
+// Define a schema for the leaderboard
+const leaderboardSchema = new mongoose.Schema({
+    name: String,
+    score: Number,
+});
+
+const Leaderboard = mongoose.model('Leaderboard', leaderboardSchema);
+
+// API to get leaderboard
+app.get('/leaderboard', async (req, res) => {
+    const leaderboard = await Leaderboard.find().sort({ score: -1 }).limit(10);
+    res.json(leaderboard);
+});
+
+// API to submit a score
+app.post('/leaderboard', async (req, res) => {
+    const { name, score } = req.body;
+    const newEntry = new Leaderboard({ name, score });
+    await newEntry.save();
+    res.status(201).json(newEntry);
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
+

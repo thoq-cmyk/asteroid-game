@@ -699,6 +699,21 @@ function animate() {
       }
     }
   }
+  // function to handle game over
+  function handleGameOver() {
+    gameOverSound.play(); // Play game over sound
+    const playerName = prompt("Game Over! Please enter your username:");
+
+    if (playerName) {
+      const scoreValue = score; // Assuming 'score' holds the player's score
+      submitScore(playerName, scoreValue); // Submit the score to the server
+    }
+
+    // Optionally, you can reload the game after a short delay
+    setTimeout(() => {
+      window.location.reload(); // Restart the game
+    }, 2000); // 2 seconds delay
+  }
 
   // Update and manage enemies
   const currentTime = Date.now(); // Get the current time
@@ -719,9 +734,7 @@ function animate() {
 
         // Game over check
         if (player.lives <= 0) {
-          gameOverSound.play(); // Play game over sound
-          alert("Game Over!");
-          window.location.reload(); // Restart the game
+          handleGameOver();
         }
       }
     }
@@ -801,3 +814,46 @@ window.addEventListener("keyup", (event) => {
 });
 
 animate();
+
+async function fetchScores() {
+  try {
+    const response = await fetch("http://localhost:3000/scores");
+    const scores = await response.json();
+    console.log(scores); // Log scores to the console
+
+    // Display scores in the leaderboard
+    const leaderboard = document.getElementById("leaderboard");
+    leaderboard.innerHTML = ""; // Clear existing scores
+    scores.forEach((score) => {
+      const li = document.createElement("li");
+      li.textContent = `${score.player}: ${score.score}`;
+      leaderboard.appendChild(li);
+    });
+  } catch (error) {
+    console.error("Error fetching scores:", error);
+  }
+}
+
+// Call fetchScores when the page loads
+window.onload = () => {
+  fetchScores(); // Fetch scores on page load
+};
+
+// Function to submit the score after the game ends
+async function submitScore(playerName, scoreValue) {
+  try {
+    const response = await fetch("http://localhost:3000/scores", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ player: playerName, score: scoreValue }),
+    });
+
+    const result = await response.json();
+    console.log("Score added:", result);
+    fetchScores(); // Refresh the leaderboard after adding a new score
+  } catch (error) {
+    console.error("Error adding score:", error);
+  }
+}

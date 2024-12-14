@@ -76,3 +76,28 @@ canvas {
   font-size: 16px; /* Adjust the size of the paragraph text */
   margin: 5px 0; /* Space between paragraphs */
 }
+.leaderboard {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  position: absolute; /* Position it as needed */
+  top: 20px; /* Adjust as needed */
+  right: 20px; /* Adjust as needed */
+  width: 200px; /* Adjust width as needed */
+  z-index: 999;
+}
+
+.leaderboard h2 {
+  text-align: center;
+}
+
+.leaderboard ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.leaderboard li {
+  padding: 5px;
+  border-bottom: 1px solid white;
+}

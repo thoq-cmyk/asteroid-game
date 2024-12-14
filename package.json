@@ -1,0 +1,17 @@
+{
+  "name": "asteroid.project",
+  "version": "1.0.0",
+  "description": "making a game using html, js and the use of models found on sprite :)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "mongodb": "^6.12.0"
+  }
+}
