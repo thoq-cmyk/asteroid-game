@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game with TV - Leaderboard</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="custom-styles.css" />
+    <!-- Link to the new CSS file -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lacquer&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="tv-frame">
+      <img
+        src="assets/images/background/green-frame.png"
+        alt="TV Frame"
+        class="tv-image"
+      />
+      <div
+        id="leaderboardContainer"
+        style="background-color: transparent; color: green; text-align: center"
+      >
+        <h2 style="font-family: 'Lacquer', sans-serif; text-align: center">
+          Leaderboard
+        </h2>
+        <ul id="leaderboard"></ul>
+        <form id="scoreForm" style="display: none">
+          <input type="text" id="player" placeholder="Player Name" required />
+          <input type="number" id="score" placeholder="Score" required />
+          <button type="submit">Submit Score</button>
+        </form>
+      </div>
+      <button
+        onclick="window.location.href='index.html'"
+        style="font-family: 'Lacquer', sans-serif; cursor: pointer"
+      >
+        Back to Game
+      </button>
+      <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Leaderboard Management</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>Admin - Manage Leaderboard</h1>
+    <div id="adminControls">
+      <button id="fetchScoresButton">Fetch Scores</button>
+      <button id="resetLeaderboardButton">Reset Leaderboard</button>
+    </div>
+    <ul id="adminLeaderboard"></ul>
+    <input
+      type="text"
+      id="oldPlayerName"
+      placeholder="Current Player Name"
+      required
+    />
+    <input
+      type="text"
+      id="newPlayerName"
+      placeholder="New Player Name"
+      required
+    />
+    <button id="updatePlayerButton">Update Player Name</button>
+    <!-- Added input fields and button -->
+    <button id="leaderboardButton">View Leaderboard</button>
+    <!-- Added leaderboard button -->
+
+    <script src="admin.js"></script>
+  </body>
+</html>

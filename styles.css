@@ -8,7 +8,6 @@ body {
   height: 100vh; /* Full viewport height */
   background-image: url(assets/images/background/space-px.png);
   background-size: cover;
-
   background-position: center;
 }
 
@@ -76,16 +75,32 @@ canvas {
   font-size: 16px; /* Adjust the size of the paragraph text */
   margin: 5px 0; /* Space between paragraphs */
 }
-.leaderboard {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
+
+#usernameForm {
+  z-index: 5; /* Ensure it appears above other elements */
+  position: relative; /* Ensure it is positioned correctly */
+  font-family: "Lacquer", sans-serif; /* Match the font of the controls */
+}
+
+#usernameForm input,
+#usernameForm button {
+  font-family: "Lacquer", sans-serif; /* Set font for input and button */
+}
+
+#leaderboardContainer {
+  background-color: transparent; /* Remove background color */
+  color: green; /* Change text color to green */
   padding: 20px;
   border-radius: 10px;
-  position: absolute; /* Position it as needed */
-  top: 20px; /* Adjust as needed */
-  right: 20px; /* Adjust as needed */
-  width: 200px; /* Adjust width as needed */
+  position: relative; /* Position it within the TV frame */
+  margin-top: -400px; /* Space above the leaderboard */
+  width: 80%; /* Adjust width as needed */
   z-index: 999;
+}
+
+#leaderboard {
+  list-style-type: none; /* Remove default list styling */
+  padding: 0; /* Remove padding */
 }
 
 .leaderboard h2 {
@@ -100,4 +115,16 @@ canvas {
 .leaderboard li {
   padding: 5px;
   border-bottom: 1px solid white;
+  justify-content: center; /* Center items vertically */
+  margin: 0 auto; /* Center the frame */
+  background: none; /* Remove any background to eliminate transparency */
+}
+
+/* Additional styles for the tv-frame */
+.tv-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center items horizontally */
+  justify-content: center; /* Center items vertically */
+  margin: 0 auto; /* Center the frame */
 }

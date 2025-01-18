@@ -1,0 +1,10 @@
+/* Custom styles for usernames and scores */
+
+input[type="text"],
+input[type="number"] {
+  font-family: "Lacquer", sans-serif; /* Set font for input fields */
+}
+
+#leaderboard {
+  font-family: "Lacquer", sans-serif; /* Set font for leaderboard items */
+}

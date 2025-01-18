@@ -692,26 +692,19 @@ function animate() {
 
       // Game over check
       if (player.lives <= 0) {
-        gameOverSound.play(); // Play game over sound
-        alert("Game Over!");
-        window.location.reload(); // Restart the game
+        handleGameOver();
       }
     }
   }
   // function to handle game over
   function handleGameOver() {
     gameOverSound.play(); // Play game over sound
-    const playerName = prompt("Game Over! Please enter your username:");
+    // Removed the prompt for username at the end of the game
 
-    if (playerName) {
-      const scoreValue = score; // Assuming 'score' holds the player's score
-      submitScore(playerName, scoreValue); // Submit the score to the server
-    }
+    // Removed the logic to submit score at the end of the game
 
-    // Optionally, you can reload the game after a short delay
-    setTimeout(() => {
-      window.location.reload(); // Restart the game
-    }, 2000); // 2 seconds delay
+    // Redirect to leaderboard.html
+    window.location.href = "leaderboard.html"; // Redirect to leaderboard page
   }
 
   // Update and manage enemies
