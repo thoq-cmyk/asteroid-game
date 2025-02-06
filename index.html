@@ -6,51 +6,27 @@
     <title>Game with TV</title>
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="custom-styles.css" />
-    <!-- Link to the new CSS file -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Lacquer&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Lacquer&display=swap" rel="stylesheet" />
   </head>
   <body>
     <div class="tv-frame">
-      <img
-        src="assets/images/background/green-frame.png"
-        alt="TV Frame"
-        class="tv-image"
-      />
-      <img
-        src="assets/title/start-09-12-2024.png"
-        alt="Start Game Button"
-        id="startButton"
-        class="button"
-      />
+      <img src="assets/images/background/green-frame.png" alt="TV Frame" class="tv-image" />
+      <img src="assets/title/start-09-12-2024.png" alt="Start Game Button" id="startButton" class="button" />
       <div class="controls" id="controls">
         <h2>Controls</h2>
         <p>w to accelerate</p>
         <p>d to turn right</p>
         <p>a to turn left</p>
         <p>Space to shoot</p>
-        <p
-          id="leaderboardButton"
-          style="font-family: 'Lacquer', sans-serif; cursor: pointer"
-          onclick="document.getElementById('usernameForm').style.display='block'"
-        >
+        <p id="leaderboardButton" style="font-family: 'Lacquer', sans-serif; cursor: pointer" onclick="document.getElementById('usernameForm').style.display='block'">
           Enter Username for Leaderboard
         </p>
       </div>
 
       <div id="usernameForm" style="display: none">
-        <form>
-          <label for="username" style="font-family: 'Lacquer', sans-serif"
-            >Username:</label
-          >
-          <input
-            type="text"
-            id="username"
-            placeholder="Enter your username"
-            required
-          />
+        <form id="usernameFormElement">
+          <label for="username" style="font-family: 'Lacquer', sans-serif">Username:</label>
+          <input type="text" id="username" name="username" placeholder="Enter your username" required />
           <button id="submitUsername">Submit</button>
         </form>
       </div>
@@ -59,8 +35,8 @@
         <h2>Leaderboard</h2>
         <ul id="leaderboard"></ul>
         <form id="scoreForm" style="display: none">
-          <input type="text" id="player" placeholder="Player Name" required />
-          <input type="number" id="score" placeholder="Score" required />
+          <input type="text" id="player" name="player" placeholder="Player Name" required />
+          <input type="number" id="score" name="score" placeholder="Score" required />
           <button type="submit">Submit Score</button>
         </form>
       </div>
@@ -68,7 +44,57 @@
       <canvas id="gameCanvas"></canvas>
     </div>
 
+    <script src="leaderboard.js"></script>
     <script src="script.js"></script>
     <script src="index.js"></script>
+    <script>
+      document.getElementById('usernameFormElement').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const username = document.getElementById('username').value;
+        fetch('/submitUsername', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username })
+        }).then(response => response.text()).then(data => {
+          document.getElementById('usernameForm').style.display = 'none';
+          document.getElementById('leaderboardContainer').style.display = 'block';
+          fetchLeaderboard();
+        });
+      });
+
+      document.getElementById('scoreForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const player = document.getElementById('player').value;
+        const score = document.getElementById('score').value;
+        fetch('/submitScore', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ player, score })
+        }).then(response => response.text()).then(data => {
+          fetchLeaderboard();
+        });
+      });
+
+      function fetchLeaderboard() {
+        fetch('/leaderboard')
+          .then(response => response.json())
+          .then(data => {
+            const leaderboard = document.getElementById('leaderboard');
+            leaderboard.innerHTML = '';
+            data.forEach(entry => {
+              const li = document.createElement('li');
+              li.textContent = `${entry.player}: ${entry.score}`;
+              leaderboard.appendChild(li);
+            });
+          });
+      }
+
+      // Initial fetch to populate the leaderboard when the page loads
+      fetchLeaderboard();
+    </script>
   </body>
 </html>

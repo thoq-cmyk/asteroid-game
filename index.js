@@ -1,4 +1,56 @@
 document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener('DOMContentLoaded', function() {
+    // Handle username form submission
+    document.getElementById('usernameFormElement').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const username = document.getElementById('username').value;
+      fetch('/submitUsername', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username })
+      }).then(response => response.text()).then(data => {
+        document.getElementById('usernameForm').style.display = 'none';
+        document.getElementById('leaderboardContainer').style.display = 'block';
+        fetchLeaderboard();
+      });
+    });
+  
+    // Handle score form submission
+    document.getElementById('scoreForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const player = document.getElementById('player').value;
+      const score = document.getElementById('score').value;
+      fetch('/submitScore', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ player, score })
+      }).then(response => response.text()).then(data => {
+        fetchLeaderboard();
+      });
+    });
+  
+    // Fetch and display the leaderboard
+    function fetchLeaderboard() {
+      fetch('/leaderboard')
+        .then(response => response.json())
+        .then(data => {
+          const leaderboard = document.getElementById('leaderboard');
+          leaderboard.innerHTML = '';
+          data.forEach(entry => {
+            const li = document.createElement('li');
+            li.textContent = `${entry.player}: ${entry.score}`;
+            leaderboard.appendChild(li);
+          });
+        });
+    }
+  
+    // Initial fetch to populate the leaderboard when the page loads
+    fetchLeaderboard();
+  });
   const startButton = document.getElementById("startButton");
   const canvas = document.getElementById("gameCanvas");
   const controls = document.getElementById("controls"); // Get the controls section
