@@ -3,10 +3,10 @@ This project builds upon the foundations of the Asteroid Game Tutorial by Net Ni
 Watch the tutorial here.
 
 Assets and Resources
-Sprite Animations:
 I sourced sprite animations from The Sprite Resource:
 Visit The Sprite Resource here.
 
+Sprite Animations:
 Game Models:
 
 Asteroids: Models for asteroid obstacles.
@@ -73,7 +73,7 @@ Mozilla Firefox
 
 <img width="1420" alt="Screenshot 2024-12-<img width="1419" alt="Screenshot 2024-12-17 at 23 39 16" src="https://github.com/user-attachments/assets/a6f3c66d-75e7-4ead-b2a0-2fffba2c6560" />
 <img width="1412" alt="Screenshot 2024-12-17 at 23 38 55" src="https://github.com/user-attachments/assets/ede97d93-9ca9-486b-9331-baf03138be1a" />
-17 at 23 39 29 2" src="https://github.com/user-attachments/assets/c3ee98c0-dafb-4745-94cd-328377606e13" /><img width="1426" alt="Screenshot 2024-12-17 at 23 40 08" src="https://github.com/user-attachments/assets/16dcc68b-ef71-4780-a7a1-4108f4ed0b9d" />
+<img width="1426" alt="Screenshot 2024-12-17 at 23 40 08" src="https://github.com/user-attachments/assets/16dcc68b-ef71-4780-a7a1-4108f4ed0b9d" />
 
 
 
